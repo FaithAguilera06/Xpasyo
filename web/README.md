@@ -63,9 +63,10 @@ Copy `json_files/serviceAccountKey.example.json` to `json_files/serviceAccountKe
 - For database connections, use local Supabase credentials in development and update for production
 
 ## Authors
-Aguilera, Faith Anne D. 
-Alindada, Isaiah Vincent M.
+Aguilera, Faith Anne , Alindada, Isaiah Vincent 
 
 
 ## License
-This project is an academic capstone requirement. All rights reserved.
+This project is an academic capstone requirement. 
+
+All rights reserved.
