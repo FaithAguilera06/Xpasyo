@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KNN Location Search with Rule-based Filters and Streetmap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* Full height so map container fills the viewport */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7fa;
+            display: flex;
+            flex-direction: column;
+        }
+        body > * {
+            flex-shrink: 0;
+        }
+        header {
+            background: linear-gradient(135deg, #4a90e2, #007acc);
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        main {
+            flex: 1 1 auto;
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            box-sizing: border-box;
+            min-height: 0; /* fix flexbox overflow */
+        }
+        .controls {
+            width: 320px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 1.25rem;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+        .controls h2 {
+            margin-top: 0;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        label {
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+            color: #555;
+        }
+        select, input[type="number"] {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1.5px solid #ccc;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        select:focus, input[type="number"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+        button {
+            margin-top: 2rem;
+            background: #4a90e2;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #007acc;
+        }
+        #map {
+            flex: 1 1 auto;
+            border-radius: 8px;
+            box-shadow: 0 0 16px rgba(0,0,0,0.1);
+            height: 100vh; /* Important: full viewport height for visibility */
+        }
+        footer {
+            text-align: center;
+            padding: 0.5rem 0;
+            background: #e9f0fb;
+            font-size: 0.9rem;
+            color: #666;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        KNN Location Search with Rule-based Filters and Streetmap
+    </header>
+    <main>
+        <section class="controls" aria-label="Filters and input controls">
+            <h2>Filters & Query</h2>
+            <label for="filter-type">Location Type</label>
+            <select id="filter-type" aria-describedby="descFilterType">
+                <option value="">-- Any --</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Cafe">Cafe</option>
+                <option value="Library">Library</option>
+                <option value="Park">Park</option>
+            </select>
+            <small id="descFilterType">Filter locations by type.</small>
+
+            <label for="filter-rating">Minimum Rating</label>
+            <select id="filter-rating" aria-describedby="descFilterRating">
+                <option value="">-- Any --</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars & Up</option>
+                <option value="3">3 Stars & Up</option>
+            </select>
+            <small id="descFilterRating">Filter locations by minimum user rating.</small>
+
+            <label for="filter-price">Maximum Price Level</label>
+            <select id="filter-price" aria-describedby="descFilterPrice">
+                <option value="">-- Any --</option>
+                <option value="1">$ (Inexpensive)</option>
+                <option value="2">$$ (Moderate)</option>
+                <option value="3">$$$ (Expensive)</option>
+            </select>
+            <small id="descFilterPrice">Filter by price level (1 to 3).</small>
+
+            <label for="query-lat">Query Latitude</label>
+            <input
+                type="number"
+                step="any"
+                id="query-lat"
+                aria-describedby="descQueryLat"
+                placeholder="e.g. 40.7128"
+                value="40.7128"
+            />
+            <small id="descQueryLat">Enter latitude of query location.</small>
+
+            <label for="query-lng">Query Longitude</label>
+            <input
+                type="number"
+                step="any"
+                id="query-lng"
+                aria-describedby="descQueryLng"
+                placeholder="e.g. -74.0060"
+                value="-74.0060"
+            />
+            <small id="descQueryLng">Enter longitude of query location.</small>
+
+            <label for="knn-k">Number of Neighbors (k)</label>
+            <input
+                type="number"
+                id="knn-k"
+                aria-describedby="descKnnK"
+                value="5"
+                min="1"
+                max="20"
+                step="1"
+            />
+            <small id="descKnnK">Number of nearest neighbors to find.</small>
+
+            <button id="search-btn" type="button">Search Nearby</button>
+        </section>
+        <section id="map" role="region" aria-label="Map of locations"></section>
+    </main>
+    <footer>
+        Powered by Leaflet &amp; OpenStreetMap | Sample locations data
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Sample dataset of locations with attributes: type, rating, priceLevel, lat, lng
+        const locations = [
+            { id: 1, name: "Central Park", type: "Park", rating: 4.7, priceLevel: 0, lat: 40.785091, lng: -73.968285 },
+            { id: 2, name: "Brooklyn Library", type: "Library", rating: 4.4, priceLevel: 0, lat: 40.672501, lng: -73.968048 },
+            { id: 3, name: "Cafe Mocha", type: "Cafe", rating: 4.1, priceLevel: 1, lat: 40.730610, lng: -73.935242 },
+            { id: 4, name: "Joe's Pizza", type: "Restaurant", rating: 4.8, priceLevel: 1, lat: 40.730610, lng: -73.995242 },
+            { id: 5, name: "Sunset Restaurant", type: "Restaurant", rating: 3.9, priceLevel: 3, lat: 40.718217, lng: -73.998284 },
+            { id: 6, name: "Greenfield Cafe", type: "Cafe", rating: 4.5, priceLevel: 2, lat: 40.712217, lng: -74.015742 },
+            { id: 7, name: "Eastside Park", type: "Park", rating: 4.2, priceLevel: 0, lat: 40.703276, lng: -73.938875 },
+            { id: 8, name: "Westside Library", type: "Library", rating: 4.0, priceLevel: 0, lat: 40.752726, lng: -73.977229 },
+            { id: 9, name: "Moonlight Cafe", type: "Cafe", rating: 4.6, priceLevel: 2, lat: 40.729515, lng: -73.984230 },
+            { id: 10, name: "Bella's Pizza", type: "Restaurant", rating: 4.3, priceLevel: 1, lat: 40.732013, lng: -73.999731 }
+        ];
+
+        // Initialize Leaflet map
+        const map = L.map('map').setView([40.7128, -74.0060], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let markersLayer = L.layerGroup().addTo(map);
+
+        // Calculate distance (haversine) between two lat-lng points in kilometers
+        function haversineDistance(lat1, lng1, lat2, lng2) {
+            function toRad(x) { return x * Math.PI / 180; }
+            const R = 6371; // Earth radius in km
+            const dLat = toRad(lat2 - lat1);
+            const dLng = toRad(lng2 - lng1);
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Apply rule-based filters on locations array
+        function applyFilters(data, filters) {
+            return data.filter(loc => {
+                if (filters.type && loc.type !== filters.type) return false;
+                if (filters.rating && loc.rating < filters.rating) return false;
+                if (filters.priceLevel !== null && loc.priceLevel > filters.priceLevel) return false;
+                return true;
+            });
+        }
+
+        // KNN algorithm to find k nearest neighbors to query location
+        function knn(data, queryLat, queryLng, k) {
+            const distances = data.map(loc => ({
+                loc,
+                distance: haversineDistance(queryLat, queryLng, loc.lat, loc.lng)
+            }));
+            distances.sort((a, b) => a.distance - b.distance);
+            return distances.slice(0, k).map(d => d.loc);
+        }
+
+        // Clear all markers from map
+        function clearMarkers() {
+            markersLayer.clearLayers();
+        }
+
+        // Add markers for locations to the map, highlighting nearest neighbors differently
+        function addMarkers(locations, neighbors) {
+            clearMarkers();
+            // Add all locations
+            locations.forEach(loc => {
+                const isNeighbor = neighbors.some(n => n.id === loc.id);
+                const marker = L.circleMarker([loc.lat, loc.lng], {
+                    radius: 8,
+                    fillColor: isNeighbor ? '#e74c3c' : '#3498db',
+                    color: isNeighbor ? '#c0392b' : '#2980b9',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8,
+                }).addTo(markersLayer);
+                marker.bindPopup(`
+                    <strong>${loc.name}</strong><br />
+                    Type: ${loc.type}<br />
+                    Rating: ${loc.rating} ⭐<br />
+                    Price Level: ${loc.priceLevel === 0 ? 'Free' : '$'.repeat(loc.priceLevel)}
+                `);
+            });
+        }
+
+        // Event handler for search button
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const filters = {
+                type: document.getElementById('filter-type').value || null,
+                rating: (() => {
+                    const val = document.getElementById('filter-rating').value;
+                    if (!val) return null;
+                    return parseFloat(val);
+                })(),
+                priceLevel: (() => {
+                    const val = document.getElementById('filter-price').value;
+                    if (!val) return null;
+                    return parseInt(val);
+                })()
+            };
+            const queryLat = parseFloat(document.getElementById('query-lat').value);
+            const queryLng = parseFloat(document.getElementById('query-lng').value);
+            let k = parseInt(document.getElementById('knn-k').value);
+
+            if (isNaN(queryLat) || isNaN(queryLng)) {
+                alert('Please provide valid query latitude and longitude.');
+                return;
+            }
+            if (isNaN(k) || k < 1) {
+                k = 5;
+                document.getElementById('knn-k').value = k;
+            }
+
+            const filteredData = applyFilters(locations, filters);
+
+            if (filteredData.length === 0) {
+                alert('No locations found matching the selected filters.');
+                clearMarkers();
+                return;
+            }
+
+            // Compute nearest neighbors on the filtered data
+            const neighbors = knn(filteredData, queryLat, queryLng, Math.min(k, filteredData.length));
+
+            // Center map on query location, add a distinct marker
+            map.setView([queryLat, queryLng], 13);
+            clearMarkers();
+
+            const queryMarker = L.marker([queryLat, queryLng], {
+                icon: L.icon({
+                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/149/149059.png',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30],
+                    popupAnchor: [0, -28]
+                }),
+                title: 'Query Location'
+            }).addTo(markersLayer).bindPopup('Query Location').openPopup();
+
+            // Add neighbor and filtered locations markers
+            addMarkers(filteredData, neighbors);
+        });
+
+        // Initial load: show all locations on the map (no filters, no search)
+        addMarkers(locations, []);
+        map.setView([40.7128, -74.0060], 12);
+    </script>
+</body>
+</html>

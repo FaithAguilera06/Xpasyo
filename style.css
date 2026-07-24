@@ -1,0 +1,188 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('elements/REGWEB-BG.gif');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}
+
+.logo img {
+    width: 100px;
+    height: auto;
+}
+
+.container {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 30px 40px;
+    border-radius: 12px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    color: white;
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #FFCC00;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* General label styling */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #FFCC00;
+}
+
+/* Inputs and selects general style */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"],
+select {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    border-radius: 5px;
+    border: 1.5px solid #ccc;
+    background-color: #fff;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="file"]:focus,
+select:focus {
+    border-color: #FFCC00;
+    outline: none;
+}
+
+/* Container for rows of inputs to place horizontally */
+.form-row {
+    display: flex;
+    gap: 20px; /* Space between the two dropdowns */
+    margin-bottom: 20px;
+}
+
+/* Each item in the row take equal space */
+.form-row > div {
+    flex: 1;
+}
+
+/* File upload list */
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+ul li {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #FFCC00;
+}
+
+ul li input[type="file"] {
+    margin-top: 6px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* Submit button style */
+button {
+    display: block;
+    margin: 0 auto;
+    padding: 12px 0;
+    width: 50%;
+    background-color: #FFCC00;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(255, 204, 0, 0.5);
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #e6b800;
+}
+
+/* Style for select dropdown arrow */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: white url("data:image/svg+xml;charset=US-ASCII,%3Csvg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 10px center;
+    background-size: 12px;
+    cursor: pointer;
+}
+
+/* Links and text */
+a {
+    text-align: center;
+    color: #FFCC00;
+    display: block;
+    margin-top: 15px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+p {
+    text-align: center;
+    color: white;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+/* Responsive user icon fix */
+.user-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    overflow: hidden;
+    padding: 0;
+    margin: 0 8px;
+}
+.user-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+@media (max-width: 768px) {
+    .user-icon {
+        width: 32px;
+        height: 32px;
+        margin: 0 4px;
+    }
+    .user-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}

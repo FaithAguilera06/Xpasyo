@@ -1,0 +1,12 @@
+{
+    "require": {
+        "kreait/firebase-php": "^6.0",
+        "google/cloud-storage": "^1.25",
+        "paragonie/sodium_compat": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "\\": "./"
+        }
+    }
+}

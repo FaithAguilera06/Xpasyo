@@ -1,0 +1,36 @@
+# Disable directory listing
+Options -Indexes +FollowSymLinks
+
+# Set the default page
+DirectoryIndex index.php
+
+# Set default charset
+AddDefaultCharset UTF-8
+
+# Enable URL rewriting
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Rewrite requests to /pages/*.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^pages/([^/]+)\.php$ /pages/$1.php [L]
+
+    # Fallback to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Security - block access to sensitive file types
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|json)$">
+    Require all denied
+</FilesMatch>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
