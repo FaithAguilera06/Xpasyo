@@ -53,8 +53,11 @@ The mobile app entry point is under `app/src/`
 Backend API routes are defined in `server/routes/`
 Target platform is Android 9.0+
 For database connections, use local Supabase credentials in development and update for production
+
 Authors
 Aguilera, Faith Anne D. · Alindada, Isaiah Vincent M.
+
 Capstone Adviser: Prof. Vivien A. Agustin
+
 License
 This project is an academic capstone requirement. All rights reserved.
