@@ -1,61 +1,60 @@
-# XPASYO Website
-
-A prototype/draft project containing experimental features and proof-of-concept implementations for the XPASYO system.
-
-## Project Structure
-
+AutoSOS
+A mobile emergency assistance platform for motorcycle riders, featuring AI-powered mechanic matching, visual/chat diagnostics, and facial recognition payments.
+Project Structure
 ```
-web/
-├── elements/       # Images and assets
-├── json_files/     # JSON data files and utilities
-├── pages/          # PHP pages
-├── vendor/         # Third-party libraries (Composer)
-├── style.css       # Global styles
-└── knn_streetmap_rule_based.html  # Mapping demo page
+AutoSOS/
+├── app/                # Ionic/Angular mobile application (Android)
+├── server/             # Node.js/Express backend API
+├── ai_models/          # YOLOv8 model files and Python diagnostic scripts
+├── json_files/         # Config and service account files
+└── README.md
 ```
+Features
+📍 GPS-based mechanic matching using Multi-Criteria Filtering (Haversine distance + skill matching)
+🤖 AI visual diagnostics with YOLOv8 (flat tires, broken lights, broken mirrors, oil leaks)
+💬 GPT-4 powered chatbot for conversational troubleshooting
+🔐 Facial recognition payment authorization with FaceNet
+💳 Simulated wallet system with manual GCash top-up/cash-out
+Getting Started
+Mobile App
+```bash
+# Navigate to the app directory
+cd app
 
-## Features
+# Install dependencies
+npm install
 
-- 🗺️ Interactive mapping with OpenStreetMap
-- 📅 Calendar and date picker components
-- 🎨 Custom styling and theming
-- 📊 Data visualization
+# Run the app locally
+npm start
+```
+Backend Server
+```bash
+# Navigate to the server directory
+cd server
 
-## Getting Started
+# Install dependencies
+npm install
 
-### Local Development with PHP Server
-
-1. **Using PHP's built-in development server:**
-   ```bash
-   # Navigate to the project root directory
-   cd web
-   
-   # Start PHP development server (PHP 5.4+)
-   php -S localhost:8000 -t .
-   ```
-   Then open `http://localhost:8000/pages/INDEX.php` in your browser
-
-2. **For XAMPP/WAMP/MAMP:**
-   - Place the project folder in your web server's root directory (e.g., `htdocs` or `www`)
-   - Start your local server (Apache, MySQL if needed)
-   - Access the site at `http://localhost/Xpasyo/web/pages/INDEX.php`
-
-## Firebase Setup
-
-Copy `json_files/serviceAccountKey.example.json` to `json_files/serviceAccountKey.json` and add your Firebase service account credentials. This file is not committed to git.
-
-## Dependencies
-
-- OpenStreetMap
-- Custom JavaScript utilities
-- External mapping libraries
-
-## Development Notes
-
-- The main entry point is `pages/INDEX.php`
-- All PHP includes should use relative paths from the document root
-- For database connections, use `localhost` in development and update for production
-
-## License
-
-This project is part of the XPASYO system. All rights reserved.
+# Start the server
+npm run dev
+```
+Firebase / Supabase Setup
+Copy `json_files/serviceAccountKey.example.json` to `json_files/serviceAccountKey.json` and add your own service account credentials. This file is gitignored and should never be committed.
+Dependencies
+Ionic Framework, Angular, TypeScript
+Node.js, Express.js
+Supabase (PostgreSQL)
+YOLOv8, OpenCV, Python
+GPT-4 API
+FaceNet API
+Mapbox, Geolocation API
+Development Notes
+The mobile app entry point is under `app/src/`
+Backend API routes are defined in `server/routes/`
+Target platform is Android 9.0+
+For database connections, use local Supabase credentials in development and update for production
+Authors
+Aguilera, Faith Anne D. · Alindada, Isaiah Vincent M.
+Capstone Adviser: Prof. Vivien A. Agustin
+License
+This project is an academic capstone requirement. All rights reserved.
