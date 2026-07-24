@@ -10,7 +10,7 @@ Xpasyo/
 └── app/    # Ionic/Angular mobile app (iOS/Android)
 ```
 
-## Web Application (sample)
+## Web Application 
 
 PHP-based web interface for gym management, classes, notifications, and admin features.
 
