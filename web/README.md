@@ -1,4 +1,4 @@
-# XPASYO Draft
+# XPASYO Website
 
 A prototype/draft project containing experimental features and proof-of-concept implementations for the XPASYO system.
 
