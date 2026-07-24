@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-toolbar style="--background: #000; --color: white;">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <lucide-icon name="arrow-left"></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Gym Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading gym details...</p>
+  </div>
+
+  <div *ngIf="!isLoading && gym" class="gym-content">
+    <!-- Gym Image -->
+    <div class="gym-image">
+      <img
+        [src]="gym.gymInfo.image || 'assets/images/default-gym.png'"
+        [alt]="gym.gymInfo.name"
+        (error)="onImageError($event)"
+      />
+    </div>
+
+    <!-- Gym Info -->
+    <div class="gym-info">
+
+      <!-- Gym Description with See More/Less Toggle -->
+      <div class="description-section" *ngIf="descriptionText">
+        <h2>About</h2>
+        <p class="gym-description">
+          {{ showFullDescription ? descriptionText : truncatedDescription }}
+          <button *ngIf="hasLongDescription" (click)="toggleDescription()" class="see-more-btn" ion-button fill="clear">
+            {{ showFullDescription ? 'See less' : 'See more' }}
+          </button>
+        </p>
+      </div>
+
+      <!-- Map Section -->
+      <div class="map-section" style="margin: 16px 0">
+        <h2 style="margin-bottom: 16px; font-size: 1.25rem; font-weight: 600; color: #000;">
+          Gym Details
+        </h2>
+        
+        <div class="gym-details-list">
+          <div *ngIf="gym?.gym_address" class="detail-row">
+            <lucide-icon name="map-pin"></lucide-icon>
+            <strong>Address:</strong> <span>{{ gym.gym_address }}</span>
+          </div>
+          <div *ngIf="gym?.gymInfo?.businessHours" class="detail-row">
+            <lucide-icon name="clock"></lucide-icon>  
+            <strong>Operating hours:</strong> <span>{{ gym.gymInfo.businessHours }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="schedule-section">
+        <h2>Class Schedule</h2>
+        <div class="schedule-grid">
+          <!-- Show classes if they exist -->
+          <ng-container *ngIf="hasClasses()">
+            <div class="class-schedule">
+              <div class="schedule-table">
+                <div class="table-header">
+                  <div class="header-cell">Day</div>
+                  <div class="header-cell">Class Type</div>
+                  <div class="header-cell">Time</div>
+                </div>
+                <div class="table-body">
+                  <ng-container *ngFor="let classItem of getScheduleArray()">
+                    <div class="table-row">
+                      <div class="table-cell">{{ getAbbreviatedDay(classItem.day || '') }}</div>
+                      <div class="table-cell">{{ classItem.className }}</div>
+                      <div class="table-cell">{{ classItem.time }}</div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Show message if no schedule data -->
+          <div *ngIf="!gym?.gymInfo?.schedule" class="no-classes">
+            <p>No schedule information available</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Apply Button (Coach Only) -->
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-button 
+      expand="block" 
+      (click)="navigateToSessionBooking()" 
+      class="apply-button custom-view-button"
+      [disabled]="isNavigating"
+    >
+      <ion-spinner *ngIf="isNavigating" name="lines" style="margin-right: 8px;"></ion-spinner>
+      <span *ngIf="!isNavigating">Book Session</span>
+      <span *ngIf="isNavigating">Opening...</span>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

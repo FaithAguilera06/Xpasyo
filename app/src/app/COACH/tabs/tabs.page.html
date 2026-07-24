@@ -1,0 +1,34 @@
+<ion-content>
+  <ion-router-outlet></ion-router-outlet>
+
+  <!-- Custom Tab Bar -->
+  <nav class="custom-tab-bar" *ngIf="showTabBar">
+    <div class="tab-container">
+      <button
+        *ngFor="let tab of tabs"
+        class="tab-button"
+        [class.active]="isActive(tab)"
+        (click)="onTabClick(tab)"
+      >
+        <div class="tab-content">
+          <!-- Lucide Icon -->
+          <lucide-icon
+            [name]="tab.icon"
+            [class.active]="isActive(tab)"
+            class="tab-icon"
+          >
+          </lucide-icon>
+          <!-- Notification badge for notification tab -->
+          <span *ngIf="tab.route === 'coach-notification' && unreadCount > 0" class="notification-badge">
+            {{ unreadCount }}
+          </span>
+          <span class="tab-label" [class.active]="isActive(tab)">
+            {{tab.label}}
+          </span>
+        </div>
+        <!-- Active Tab Indicator -->
+        <div class="tab-indicator" [class.active]="isActive(tab)"></div>
+      </button>
+    </div>
+  </nav>
+</ion-content>

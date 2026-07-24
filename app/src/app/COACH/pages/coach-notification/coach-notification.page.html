@@ -1,0 +1,344 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Header with bulk actions -->
+  <div class="notification-header-actions" *ngIf="notifications.length > 0">
+    <div class="header-info">
+      <h2>Notifications ({{ notifications.length }})</h2>
+    </div>
+    <div class="header-actions">
+      <ion-button 
+        fill="clear" 
+        size="small" 
+        color="danger" 
+        (click)="showBulkDeleteOptions()"
+        class="bulk-delete-btn"
+      >
+        <lucide-icon name="trash-2" slot="start"></lucide-icon>
+        Delete All
+      </ion-button>
+    </div>
+  </div>
+
+  <div *ngIf="notifications.length === 0" class="empty-state">
+    <lucide-icon name="bell-off"></lucide-icon>
+    <h2>No Notifications</h2>
+    <p>You don't have any notifications yet.</p>
+    <ion-button (click)="loadNotifications()" fill="clear">
+      <lucide-icon slot="start" name="refresh-cw"></lucide-icon>
+      Refresh
+    </ion-button>
+  </div>
+
+  <ion-list
+    lines="none"
+    *ngIf="notifications.length > 0"
+    class="notification-list"
+  >
+    <div
+      *ngFor="let notification of notifications; trackBy: trackByFn"
+      class="notif-card"
+    >
+      <div class="notif-card-content">
+          <div class="notification-card-wrapper">
+            <div class="notification-header">
+              <!-- Simple card for paymentupdate notifications -->
+              <div *ngIf="isPaymentUpdate(notification)" class="simple-payment-update-card"
+                [ngClass]="{
+                  'approved': (notification.title || notification.data?.['title'] || '').toLowerCase().includes('paid') || (notification.message || notification.data?.['message'] || '').toLowerCase().includes('approved'),
+                  'rejected': (notification.title || notification.data?.['title'] || '').toLowerCase().includes('rejected') || (notification.message || notification.data?.['message'] || '').toLowerCase().includes('rejected')
+                }">
+                <div class="payment-badge-row">
+                  <span class="payment-badge" [ngClass]="{
+                    'badge-approved': (notification.title || notification.data?.['title'] || '').toLowerCase().includes('paid') || (notification.message || notification.data?.['message'] || '').toLowerCase().includes('approved'),
+                    'badge-rejected': (notification.title || notification.data?.['title'] || '').toLowerCase().includes('rejected') || (notification.message || notification.data?.['message'] || '').toLowerCase().includes('rejected')
+                  }">
+                    <lucide-icon *ngIf="(notification.title || notification.data?.['title'] || '').toLowerCase().includes('paid') || (notification.message || notification.data?.['message'] || '').toLowerCase().includes('approved')" name="circle-check"></lucide-icon>
+                    <lucide-icon *ngIf="(notification.title || notification.data?.['title'] || '').toLowerCase().includes('rejected') || (notification.message || notification.data?.['message'] || '').toLowerCase().includes('rejected')" name="x-circle"></lucide-icon>
+                    {{ (notification.title || notification.data?.['title'] || '').toLowerCase().includes('paid') || (notification.message || notification.data?.['message'] || '').toLowerCase().includes('approved') ? 'Paid' : 'Rejected' }}
+                  </span>
+                  <h2>{{ notification.title || notification.data?.['title'] }}</h2>
+                </div>
+                <p>{{ notification.message || notification.data?.['message'] }}</p>
+              </div>
+              <!-- END simple card -->
+              
+              <!-- Regular notification cards -->
+              <ng-container *ngIf="!isPaymentUpdate(notification)" class="notification-header">
+                <!-- Booking Notifications -->
+                <ng-container *ngIf="notification.type === 'booking'">
+                  <div class="notification-card booking-card">
+                    <div class="card-header">
+                      <lucide-icon name="calendar" class="header-icon"></lucide-icon>
+                      <span class="header-title">New Booking</span>
+                      <span *ngIf="getNotificationData(notification, 'gymName')" class="gym-name">
+                        - {{ getNotificationData(notification, 'gymName') }}
+                      </span>
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        color="danger" 
+                        (click)="handleDeleteNotification(notification); $event.stopPropagation()"
+                        class="header-delete-btn"
+                      >
+                        <lucide-icon name="x" slot="icon-only"></lucide-icon>
+                      </ion-button>
+                    </div>
+                    <div class="card-body">
+                      <p class="notification-message">
+                        {{ getNotificationData(notification, 'clientName') || 'A client' }} booked {{ getNotificationData(notification, 'className') || 'a class' }}
+                      </p>
+                      <div class="notification-time">
+                        <span>{{ getTimeCreated(notification) }}</span>
+                        <span class="relative-time">{{ notification.formattedRelativeTime }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <!-- Payment Notifications -->
+                <ng-container *ngIf="notification.type === 'payment'">
+                  <div class="notification-card payment-card">
+                    <div class="card-header">
+                      <lucide-icon name="credit-card" class="header-icon"></lucide-icon>
+                      <span class="header-title">Payment Verification</span>
+                      <span *ngIf="getNotificationData(notification, 'gymName')" class="gym-name">
+                        - {{ getNotificationData(notification, 'gymName') }}
+                      </span>
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        color="danger" 
+                        (click)="handleDeleteNotification(notification); $event.stopPropagation()"
+                        class="header-delete-btn"
+                      >
+                        <lucide-icon name="x" slot="icon-only"></lucide-icon>
+                      </ion-button>
+                    </div>
+                    <div class="card-body">
+                      <p class="notification-message">
+                        <ng-container *ngIf="getNotificationData(notification, 'action')?.includes('venue_payment'); else clientPayment">
+                          Owner approved your venue payment for {{ getNotificationData(notification, 'className') || 'a class' }}. Your class is now active.
+                        </ng-container>
+                        <ng-template #clientPayment>
+                          {{ notification.latestClientName || getNotificationData(notification, 'clientName') || 'A client' }} submitted a payment for {{ getNotificationData(notification, 'className') || 'a class' }}. Awaiting confirmation.
+                        </ng-template>
+                      </p>
+                      <div class="status-badge-container">
+                        <ion-badge 
+                          *ngIf="!getNotificationData(notification, 'action')?.includes('venue_payment')"
+                          [ngStyle]="getPaymentStatusBadgeStyle(notification)"
+                          [color]="getPaymentStatusColor(notification)" 
+                          class="status-badge">
+                          <lucide-icon [name]="getPaymentStatusIcon(notification)" slot="start"></lucide-icon>
+                          {{ getPaymentStatusText(notification) }}
+                        </ion-badge>
+                        <ion-badge 
+                          *ngIf="getNotificationData(notification, 'action')?.includes('venue_payment')"
+                          [color]="getNotificationData(notification, 'action')?.includes('approved') ? 'success' : 'danger'" 
+                          class="status-badge">
+                          <lucide-icon [name]="getNotificationData(notification, 'action')?.includes('approved') ? 'check-circle' : 'x-circle'" slot="start"></lucide-icon>
+                          {{ getNotificationData(notification, 'action')?.includes('approved') ? 'Approved' : 'Rejected' }}
+                        </ion-badge>
+                      </div>
+                      <div class="notification-time">
+                        <span>{{ getTimeCreated(notification) }}</span>
+                        <span class="relative-time">{{ notification.formattedRelativeTime }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <!-- System Notifications -->
+                <ng-container *ngIf="notification.type === 'system'">
+                  <div class="notification-card system-card">
+                    <div class="card-header">
+                      <lucide-icon name="info" class="header-icon"></lucide-icon>
+                      <span class="header-title">System Notification</span>
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        color="danger" 
+                        (click)="handleDeleteNotification(notification); $event.stopPropagation()"
+                        class="header-delete-btn"
+                      >
+                        <lucide-icon name="x" slot="icon-only"></lucide-icon>
+                      </ion-button>
+                    </div>
+                    <div class="card-body">
+                      <p class="notification-message">{{ notification.message }}</p>
+                      <div class="notification-time">
+                        <span>{{ getTimeCreated(notification) }}</span>
+                        <span class="relative-time">{{ notification.formattedRelativeTime }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <!-- Expand/Collapse Indicator -->
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  color="medium"
+                  (click)="toggleNotificationDetails(notification); $event.stopPropagation()"
+                  class="expand-icon-wrapper"
+                >
+                  <span class="expand-icon-bg">
+                    <lucide-icon
+                      name="chevron-down"
+                      [class.expanded]="notification.showDetails"
+                      class="expand-icon"
+                    ></lucide-icon>
+                  </span>
+                </ion-button>
+              </ng-container>
+            </div>
+
+            <!-- Expandable Details Section -->
+            <div *ngIf="notification.showDetails && !isPaymentUpdate(notification)" class="notification-details">
+              <!-- Payment Details -->
+              <ng-container *ngIf="notification.type === 'payment' || isPaymentUpdate(notification)">
+                <div class="details-card">
+                  <div class="details-header">
+                    <h3>Payment Information</h3>
+                    <div class="action-buttons row-buttons" *ngIf="getPaymentStatusText(notification) === 'Pending'">
+                      <ion-button size="small" color="success" class="approve-btn" (click)="handlePaymentAction(notification, 'approve')">
+                        <lucide-icon name="check"></lucide-icon> Approve
+                      </ion-button>
+                      <ion-button size="small" color="danger" class="reject-btn" (click)="handlePaymentAction(notification, 'reject')">
+                        <lucide-icon name="x"></lucide-icon> Reject
+                      </ion-button>
+                    </div>
+                    
+                  </div>
+                  <div class="details-content">
+                    <div class="payment-summary-block">
+                      <div class="payment-class-row">
+                        <span class="label">Class:</span>
+                        <span class="value">{{ getNotificationData(notification, 'className') }}</span>
+                      </div>
+                      <div class="payment-summary-text">
+                        You have received a payment from {{ notification.latestClientName || getNotificationData(notification, 'clientName') }} on {{ formatPaymentDateTime(notification) }}, with an amount of ₱{{ getNotificationData(notification, 'perAttendeeFee') || getNotificationData(notification, 'amount') | number:'1.2-2' }}.
+                      </div>
+                    </div>
+                    <div class="payment-proof-row" *ngIf="getNotificationData(notification, 'paymentProof')">
+                      <div class="proof-label-group">
+                        <lucide-icon name="paperclip" class="proof-clip"></lucide-icon>
+                        <span class="proof-label">Tap to view the attached image in full size</span>
+                      </div>
+                      <img 
+                        [src]="getImageSource(getNotificationData(notification, 'paymentProof'))"
+                        class="payment-proof-image"
+                        (click)="openImagePreview(getNotificationData(notification, 'paymentProof'))"
+                        alt="Payment proof"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- Booking Details -->
+              <ng-container *ngIf="notification.type === 'booking'">
+                <div class="details-card">
+                  <div class="details-header">
+                    <h3>Booking Details</h3>
+                    
+                  </div>
+                  <div class="details-content">
+                    <!-- Student Information -->
+                    <div class="detail-item" *ngIf="getNotificationData(notification, 'clientName')">
+                      <lucide-icon name="user" slot="start"></lucide-icon>
+                      <div class="detail-content">
+                        <h4>Student</h4>
+                        <p>{{ getNotificationData(notification, 'clientName') }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Class Information -->
+                    <div class="detail-item" *ngIf="getNotificationData(notification, 'className')">
+                      <lucide-icon name="fitness" slot="start"></lucide-icon>
+                      <div class="detail-content">
+                        <h4>Class</h4>
+                        <p>{{ getNotificationData(notification, 'className') }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Date & Time -->
+                    <div class="detail-item" *ngIf="getNotificationData(notification, 'date') || getNotificationData(notification, 'time')">
+                      <lucide-icon name="calendar" slot="start"></lucide-icon>
+                      <div class="detail-content">
+                        <h4>Date & Time</h4>
+                        <p>{{ getNotificationData(notification, 'date') }} at {{ getNotificationData(notification, 'time') }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Gym Information -->
+                    <div class="detail-item" *ngIf="getNotificationData(notification, 'gymName')">
+                      <lucide-icon name="location" slot="start"></lucide-icon>
+                      <div class="detail-content">
+                        <h4>Location</h4>
+                        <p>{{ getNotificationData(notification, 'gymName') }}</p>
+                      </div>
+                    </div>
+
+                    
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- System Notification Details -->
+              <ng-container *ngIf="notification.type === 'system'">
+                <div class="details-card">
+                  <div class="details-header">
+                    <h3>System Details</h3>
+                    <ion-button 
+                      fill="clear" 
+                      size="small" 
+                      color="danger" 
+                      (click)="handleDeleteNotification(notification)"
+                      class="delete-btn"
+                    >
+                      <lucide-icon name="x" slot="icon-only"></lucide-icon>
+                    </ion-button>
+                  </div>
+                  <div class="details-content">
+                    <div class="detail-item">
+                      <lucide-icon name="information-circle" slot="start"></lucide-icon>
+                      <div class="detail-content">
+                        <h4>Message</h4>
+                        <p>{{ notification.message }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Additional system notification details based on action -->
+                    <div class="detail-item" *ngIf="getNotificationData(notification, 'className')">
+                      <lucide-icon name="fitness" slot="start"></lucide-icon>
+                      <div class="detail-content">
+                        <h4>Class</h4>
+                        <p>{{ getNotificationData(notification, 'className') }}</p>
+                      </div>
+                    </div>
+
+                    <div class="detail-item" *ngIf="getNotificationData(notification, 'amount')">
+                      <lucide-icon name="credit-card" slot="start"></lucide-icon>
+                      <div class="detail-content">
+                        <h4>Amount</h4>
+                        <p>₱{{ getNotificationData(notification, 'amount') | number:'1.2-2' }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ion-list>
+  </ion-content>
+
+<div *ngIf="isImagePreviewOpen" class="image-preview-overlay" (click)="closeImagePreview()">
+  <img [src]="previewImageUrl" alt="Payment Proof" (click)="$event.stopPropagation()" class="full-size-image" />
+  <button class="close-btn" (click)="closeImagePreview(); $event.stopPropagation();">&times;</button>
+</div>

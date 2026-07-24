@@ -1,0 +1,93 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/client/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gym Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading gym details...</p>
+  </div>
+
+  <div *ngIf="!isLoading && gym" class="gym-content">
+    <!-- Gym Image -->
+    <div class="gym-image">
+      <img 
+        [src]="gym.gymInfo.image || 'assets/images/default-gym.png'" 
+        [alt]="gym.gymInfo.name" 
+        (error)="onImageError($event)"
+        class="gym-main-image"
+      >
+    </div>
+
+    <!-- Gym Info -->
+    <div class="gym-info">
+      <h1>{{ gym.gymInfo.name || 'Gym Name' }}</h1>
+      <p class="gym-address">
+        <lucide-icon name="map-pin"></lucide-icon>
+        {{ gym.gym_address || 'No address provided' }}, {{ gym.gymInfo.district || '' }}
+      </p>
+      
+      <!-- Gym Description -->
+      <div class="description-section" *ngIf="gym.gymInfo.gym_description">
+        <h2>About</h2>
+        <p>{{ gym.gymInfo.gym_description }}</p>
+      </div>
+      
+      <!-- Schedule -->
+      <div class="schedule-section">
+        <h2>Class Schedule</h2>
+        
+        <div *ngIf="!hasClassSchedule()" class="no-classes">
+          <p>No class schedule available</p>
+          <!-- Debug info -->
+          <div *ngIf="gym?.gymInfo?.schedule" class="debug-info">
+            <p>Schedule data exists but no valid classes found. Data structure:</p>
+            <pre>{{ gym.gymInfo.schedule | json }}</pre>
+          </div>
+        </div>
+        
+        <div class="classes-list" *ngIf="hasClassSchedule()">
+          <div *ngFor="let day of daysOfWeek">
+            <div *ngFor="let classItem of getClassesForDay(day)" class="class-item">
+              <div class="class-day">{{ classItem.day || day | titlecase }}</div>
+              <div class="class-details">
+                <span class="class-time">{{ classItem.time }}</span>
+                <span class="class-name">{{ classItem.className }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="!hasAnyClasses()" class="no-classes">
+            <p>No classes scheduled for this gym</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="location-section">
+        <h2>Location</h2>
+        <div #mapContainer class="map-container"></div>
+        <p class="address" *ngIf="gym?.gym_address">
+          <lucide-icon name="map-pin"></lucide-icon>
+          {{ gym.gym_address }}
+        </p>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Fixed Book Now Button -->
+<ion-footer class="ion-no-border" *ngIf="!isLoading && gym">
+  <ion-toolbar>
+    <ion-button expand="block" size="large" (click)="bookNow()" class="book-now-btn">
+      <lucide-icon name="calendar" slot="start"></lucide-icon>
+      Book Now
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

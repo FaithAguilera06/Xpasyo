@@ -1,0 +1,60 @@
+
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading your sessions...</p>
+  </div>
+
+  <!-- No Sessions -->
+  <div *ngIf="!isLoading && bookedSessions.length === 0" class="ion-text-center ion-padding">
+    <h3>No Booked Sessions</h3>
+    <p>You haven't booked any sessions yet.</p>
+    <ion-button (click)="navigateToHome()" fill="clear">
+      Find Classes
+    </ion-button>
+  </div>
+
+  <!-- Sessions List -->
+  <div *ngFor="let session of bookedSessions" 
+       (click)="viewSessionDetails(session)"
+       class="session-card">
+    <div class="session-header">
+      <h2>{{ session.className }}</h2>
+      <ion-badge [color]="getStatusColor(session.status)" class="status-badge">
+        {{ getStatusDisplayText(session.status) }}
+      </ion-badge>
+    </div>
+    
+    <div class="session-details">
+      <div class="detail-row">
+        <lucide-icon name="user"></lucide-icon>
+        <span>Coach: {{ session.coachName }}</span>
+      </div>
+      <div class="detail-row">
+        <lucide-icon name="map-pin"></lucide-icon> 
+        <p><strong>Gym:</strong> {{ getGymName(session.gymName) }}</p>
+      </div>
+      <div class="detail-row">
+        <lucide-icon name="clock"></lucide-icon>
+        <span>{{ session.day }} • {{ formatTimeRange(session.time) }}</span>
+      </div>
+      <div class="detail-row" *ngIf="session.date">
+        <lucide-icon name="calendar"></lucide-icon>
+        <span>Booked on: {{ formatDate(session.date) }}</span>
+      </div>
+    </div>
+    
+    <div class="session-footer">
+      <ion-button fill="clear" size="small" (click)="viewSessionDetails(session); $event.stopPropagation()">
+        View Details
+       
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

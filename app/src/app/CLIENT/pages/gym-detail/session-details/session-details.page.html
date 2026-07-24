@@ -1,0 +1,218 @@
+<ion-content>
+  <div class="session-details-bg">
+    <div class="session-details-card">
+      <div class="nav-back-top">
+        <button class="back-btn" (click)="goBack()">
+          <lucide-icon name="arrow-right"></lucide-icon>
+        </button>
+      </div>
+      <div class="session-header">
+        <div class="title-section">
+          <div class="session-title">Session Details</div>
+          <div class="decorative-line"></div>
+        </div>
+        <ng-container *ngIf="!isClientInClass">
+          <button
+            class="book-btn"
+            [ngClass]="{
+            'disabled': !agreedToTerms || isBooking || isBooked,
+            'loading': isBooking,
+            'success': isBooked
+          }"
+            [disabled]="!agreedToTerms || isBooking || isBooked"
+            (click)="handleBookSession()"
+          >
+            <ng-container *ngIf="isBooking">
+              <lucide-icon name="refresh-cw" class="spin"></lucide-icon>
+              Booking...
+            </ng-container>
+            <ng-container *ngIf="isBooked && !isBooking">
+              <lucide-icon name="circle-check-big"></lucide-icon> Booked!
+            </ng-container>
+            <ng-container *ngIf="!isBooking && !isBooked">
+              Book Now
+            </ng-container>
+          </button>
+        </ng-container>
+        <span
+          *ngIf="isClientInClass"
+          class="joined-label"
+          style="margin-left: 12px; color: #10b981; font-weight: 600"
+          >Joined</span
+        >
+      </div>
+      <div class="session-info">
+        <div class="coach-details-card">
+          <div class="coach-card-header">
+            <div class="icon-bg">
+              <lucide-icon name="user"></lucide-icon>
+            </div>
+            <div class="coach-info">
+              <div class="coach-label">Coach</div>
+              <div class="coach-name">{{ session?.coachName }}</div>
+            </div>
+            <div class="class-info">
+              <div class="class-info-name">{{ session?.className }}</div>
+            </div>
+          </div>
+          <div class="details-card-content">
+            <div class="detail-row">
+              <div class="icon-label">
+                <lucide-icon name="users"></lucide-icon> Class Size
+              </div>
+              <div class="detail-value">{{ session?.maxStudents || 0 }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="icon-label">
+                <lucide-icon name="users"></lucide-icon> Slots Left
+              </div>
+              <div class="detail-value">{{ getSlotsLeft() }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="icon-label">
+                <lucide-icon name="calendar"></lucide-icon> Day
+              </div>
+              <div class="detail-value">{{ session?.day }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="icon-label">
+                <lucide-icon name="calendar-days"></lucide-icon> Date
+              </div>
+              <div class="detail-value">
+                {{ getFormattedDate(session?.date) }}
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="icon-label">
+                <lucide-icon name="clock"></lucide-icon> Time
+              </div>
+              <div class="detail-value">{{ session?.time }}</div>
+            </div>
+            <div class="detail-row price-row">
+              <div class="icon-label">
+                <lucide-icon name="credit-card"></lucide-icon> Price
+              </div>
+              <div class="detail-value price">
+                ₱{{ (session?.maxStudents ? ((session?.venueFee || 0) +
+                (session?.coachFee || 0)) / session?.maxStudents : 0) |
+                number:'1.2-2' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Terms and Conditions at the bottom, expanding in place -->
+      <div class="terms-section">
+        <div class="terms-header" (click)="toggleAccordion()">
+          <div class="accordion-title">Terms and Conditions</div>
+          <lucide-icon
+            name="chevron-down"
+            [ngStyle]="{ transform: isAccordionOpen ? 'rotate(180deg)' : 'rotate(0deg)' }"
+          ></lucide-icon>
+        </div>
+        <div class="terms-content" [ngClass]="{ 'open': isAccordionOpen }">
+          <div class="terms-box justified-terms">
+            XPASYO – Terms and Conditions<br />
+            By using the XPASYO application and participating in any class or
+            group activity as a Client, you agree to the following terms and
+            conditions:<br /><br />
+            <b>1. Fee Structure</b><br />
+            1.1. When you join a class or activity, the initial fee displayed is
+            an estimate. This estimate is calculated by dividing the total class
+            fee by the projected number of participants.<br /><br />
+            1.2. You will receive an official in-app notification with the
+            final, exact amount due once enrollment for the class is complete.
+            This final amount is based on the actual number of enrollees.<br /><br />
+            1.3. Minimum Participant Fee Adjustment: If a class does not meet
+            its projected total number of participants, the existing clients
+            within that class may be required to pay an additional amount. This
+            adjustment ensures that the coach's total required fee for the class
+            is fulfilled. The specific additional amount will be communicated to
+            you in the final fee notification.<br /><br />
+            <b>2. Payment Requirements & Deadline</b><br />
+            2.1. All users are required to pay the full and exact amount
+            specified in the final notification. Overpayments and underpayments
+            are not permitted. XPASYO is committed to maintaining fairness and
+            transparency for all users.<br /><br />
+            2.2. Deadline of Payment: Payment for a confirmed class enrollment
+            must be completed at least two (2) days before the scheduled class
+            date. You will receive an in-app notification confirming receipt of
+            your payment or if your payment has been rejected. Failure to meet
+            this payment deadline may result in the cancellation of your
+            enrollment.<br /><br />
+            2.3. Payment Details: All necessary payment details will be made
+            visible within the XPASYO app when you proceed with the payment
+            process.<br /><br />
+            <b>3. Cancellation and Refund Policy (Client)</b><br />
+            3.1. Payment Verification for Refunds: All refund requests are
+            subject to verification of the submitted payment receipt. If the
+            provided receipt is deemed illegitimate or if the Coach/XPASYO has
+            not received the corresponding payment for the class, your refund
+            request may be rejected, and your participation in the class may be
+            revoked, even if you previously joined in the app. You must submit a
+            legitimate picture of your official receipt for all payment-related
+            inquiries, including refund requests.<br /><br />
+            3.2. Client-Initiated Cancellation:<br />
+            * Prior to Class Start: If you cancel your enrollment before the
+            official start date of the class and a significant percentage of
+            class slots are still open (as determined by XPASYO's policy), you
+            may be eligible for a full refund.<br />
+            * Within 24 Hours of Class Start: Cancellations made within 24 hours
+            of the scheduled class start time, or after the class has officially
+            begun, are generally non-refundable.<br />
+            * All cancellation requests must be submitted through the XPASYO
+            app's designated cancellation feature.<br /><br />
+            3.3. XPASYO or Coach-Initiated Cancellation:<br />
+            * In the event that XPASYO or the Coach cancels a class (e.g., due
+            to insufficient enrollment, coach unavailability, unforeseen
+            circumstances, or a venue issue), registered clients will receive a
+            full refund for the fees paid for that specific class.<br />
+            * Refunds for such cancellations will be processed automatically
+            within [Insert Number] business days.<br /><br />
+            3.4. Refund Processing: Approved refunds will be processed via your
+            original payment method. Please allow [Insert Number] business days
+            for the refund to reflect in your account, depending on your bank or
+            payment provider.<br /><br />
+            <b>4. Client Journey (Process)</b><br />
+            4.1. Selecting a Class: As a client, you'll first browse available
+            gyms and classes within the XPASYO app based on your preferences.<br /><br />
+            4.2. Joining and Payment: After selecting a class, you'll join it
+            within the app and be required to pay the class fee. Remember that
+            payment is due at least two (2) days before the scheduled class.
+            You'll receive notifications confirming if your payment is accepted
+            or rejected.<br /><br />
+            4.3. Class Day: On the day of the class, you must bring your XPASYO
+            app and present your class confirmation to the Coach and/or the
+            facility owner to verify your participation. Then, you can enjoy the
+            class and stay fit!<br /><br />
+            <b>5. Prohibited Conduct</b><br />
+            5.1. XPASYO has a zero-tolerance policy for fraud. Scamming, using
+            dummy accounts, or engaging in any fraudulent behavior (including
+            but not limited to misrepresenting payment, submitting illegitimate
+            receipts, false refund claims, or disrupting class activities) will
+            result in immediate suspension or permanent banning from the
+            application.<br /><br />
+            <b>6. Governing Law & Dispute Resolution (Ruling)</b><br />
+            6.1. These Terms and Conditions shall be governed by and construed
+            in accordance with the laws of the Republic of the Philippines.<br /><br />
+            6.2. Any dispute, controversy, or claim arising out of or relating
+            to these Terms and Conditions, or the breach, termination, or
+            invalidity thereof, shall first be attempted to be settled amicably
+            between the parties. If an amicable resolution cannot be reached
+            within thirty (30) days, the dispute shall be submitted to the
+            competent courts of Metro Manila, Philippines, to the exclusion of
+            all other courts.
+          </div>
+          <label class="terms-checkbox">
+            <input
+              type="checkbox"
+              [(ngModel)]="agreedToTerms"
+              (change)="handleTermsChange($event)"
+            />
+            <span>I agree to the terms and conditions</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

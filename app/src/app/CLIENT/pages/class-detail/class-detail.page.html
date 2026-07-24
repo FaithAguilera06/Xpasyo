@@ -1,0 +1,183 @@
+<ion-content
+  [fullscreen]="true"
+  class="ion-padding"
+  [scrollEvents]="true"
+  (ionRefresh)="refresh($event)"
+>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading && !isRefreshing" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading class details...</p>
+  </div>
+
+  <!-- Error State - When there's an error -->
+  <div *ngIf="error && !isLoading" class="ion-text-center ion-padding">
+    <lucide-icon name="circle-alert" size="24" color="danger"></lucide-icon>
+    <p>{{ error }}</p>
+    <ion-button (click)="loadBookingDetails()" fill="clear" size="small">
+      <lucide-icon slot="start" name="refresh-cw"></lucide-icon>
+      Try Again
+    </ion-button>
+  </div>
+
+  <!-- Booking Details -->
+  <div *ngIf="!isLoading && booking" class="booking-details">
+    <div class="booking-header">
+      <h1>{{ booking.className || 'No Class Name' }}</h1>
+      <span
+        class="status"
+        [ngClass]="(booking.status || 'pending').toLowerCase()"
+      >
+        {{ booking.status || 'Pending' }}
+      </span>
+    </div>
+
+    <div class="booking-info">
+      <div class="info-item">
+        <lucide-icon name="dumbbell"></lucide-icon>
+        <div>
+          <small>Class Type</small>
+          <p>{{ booking.className || 'Not specified' }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <lucide-icon name="user"></lucide-icon>
+        <div>
+          <small>Coach</small>
+          <p>{{ booking.coachName || 'Not specified' }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <lucide-icon name="map-pin"></lucide-icon>
+        <div>
+          <small>Gym</small>
+          <p>{{ getGymName(booking.gymName) }}</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <lucide-icon name="calendar"></lucide-icon>
+        <div>
+          <small>Date & Time</small>
+          <p>{{ booking.formattedDate || 'Not specified' }}</p>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <!-- Clients List -->
+    <div class="clients-section ion-margin-top">
+      <div class="section-header">
+        <h2>Attendees</h2>
+        <span class="spots-available" *ngIf="booking.maxStudents">
+          {{ availableSpots }} of {{ booking.maxStudents }} spots available
+        </span>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoadingClients" class="ion-text-center ion-padding">
+        <ion-spinner></ion-spinner>
+        <p>Loading attendees...</p>
+      </div>
+
+      <!-- No Clients -->
+      <div
+        *ngIf="!isLoadingClients && clientBookings.length === 0"
+        class="ion-text-center ion-padding"
+      >
+        <lucide-icon name="users" size="24" color="medium"></lucide-icon>
+        <p>No attendees yet</p>
+      </div>
+
+      <!-- Clients List -->
+      <ion-list *ngIf="!isLoadingClients && clientBookings.length > 0">
+        <ion-item *ngFor="let client of clientBookings" class="client-item">
+          <ion-avatar slot="start">
+            <img
+              [src]="'https://ui-avatars.com/api/?name=' + client.clientName + '&background=random'"
+              [alt]="client.clientName"
+            />
+          </ion-avatar>
+          <ion-label>
+            <h3>{{ client.clientName }}</h3>
+            <p>Booked on {{ client.bookingDate | date:'mediumDate' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- Booking Actions -->
+    <div class="booking-actions ion-margin-top">
+      <ion-button
+        expand="block"
+        color="medium"
+        (click)="goBack()"
+        class="ion-margin-bottom"
+      >
+        BACK TO LIST
+      </ion-button>
+
+     
+
+      <!-- Payment Button (show for pending if not yet paid, or for rejected) -->
+      <ion-button
+        *ngIf="coachApplicationStatus === 'active' && currentClientBookingStatus === 'pending' && !clientHasSubmittedPayment"
+        expand="block"
+        color="primary"
+        (click)="processPayment()"
+        class="payment-button"
+      >
+        PAY NOW
+      </ion-button>
+      <ion-button
+        *ngIf="coachApplicationStatus === 'active' && currentClientBookingStatus === 'rejected'"
+        expand="block"
+        color="warning"
+        (click)="processPayment()"
+        class="payment-button"
+      >
+        Resubmit Payment
+      </ion-button>
+
+      <!-- Pending Payment Message (show when payment is pending and payment is submitted) -->
+      <div *ngIf="coachApplicationStatus === 'active' && currentClientBookingStatus === 'pending' && clientHasSubmittedPayment" class="pending-message">
+        <lucide-icon name="clock" color="warning"></lucide-icon>
+        <p>Your payment is currently being reviewed. Please wait for approval or rejection before submitting another payment.</p>
+      </div>
+
+      <!-- Rejected Payment Message -->
+      <div *ngIf="currentClientBookingStatus === 'rejected'" class="rejected-message">
+        <lucide-icon name="alert-circle" color="warning"></lucide-icon>
+        <p>Your previous payment was rejected. Please check your payment details and try again.</p>
+      </div>
+
+      <!-- Show message if status is closed -->
+      <div *ngIf="coachApplicationStatus === 'closed'" class="status-message">
+        <lucide-icon name="lock" color="medium"></lucide-icon>
+        <p>This class is no longer accepting payments</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Booking Found State -->
+  <div
+    *ngIf="!isLoading && !booking && !error"
+    class="ion-text-center ion-padding"
+  >
+    <lucide-icon
+      name="circle-alert"
+      size="24"
+      color="medium"
+    ></lucide-icon>
+    <h3>Class Not Found</h3>
+    <p>We couldn't find the class you're looking for.</p>
+    <ion-button (click)="goBack()" fill="clear"> Go Back </ion-button>
+  </div>
+</ion-content>

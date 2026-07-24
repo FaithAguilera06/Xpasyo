@@ -1,6 +1,7 @@
 services:
   - type: web
     name: xpasyo
+    rootDir: web
     env: php
     buildCommand: composer install --no-dev --optimize-autoloader
     startCommand: php -S 0.0.0.0:10000 -t .
@@ -9,6 +10,5 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
-    # Update this to your main PHP file if different
     httpPort: 10000
-    healthCheckPath: /INDEX.php
+    healthCheckPath: /pages/INDEX.php

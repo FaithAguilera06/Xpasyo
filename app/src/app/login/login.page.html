@@ -1,0 +1,101 @@
+<ion-content class="ion-padding" [fullscreen]="true">
+  <!-- Loading and Alert components -->
+  <ion-loading
+    [isOpen]="isLoading"
+    message="Signing in..."
+  ></ion-loading>
+  <ion-alert
+    [isOpen]="showErrorAlert"
+    header="Login Error"
+    [message]="errorMessage"
+    [buttons]="['OK']"
+    (didDismiss)="showErrorAlert = false"
+  ></ion-alert>
+
+  <!-- Main container -->
+  <div class="login-page-container">
+    <div class="content-wrapper">
+      <div class="welcome-container">
+        <h1 class="welcome-title">Welcome back</h1>
+        <p class="welcome-subtitle">Sign in to your xpasyo account</p>
+      </div>
+
+      <form (ngSubmit)="login()" #loginForm="ngForm" class="form-container">
+        <div class="input-group">
+          <ion-label>Email address</ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('email')">
+            <ion-input
+              type="email"
+              class="custom-input"
+              placeholder="Enter your email"
+              [(ngModel)]="email"
+              name="email"
+              required
+              (ionFocus)="onFieldFocus('email')"
+              (ionBlur)="onFieldBlur()"
+            ></ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <ion-label>Password</ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('password')">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="custom-input password-input"
+              placeholder="Enter your password"
+              [(ngModel)]="password"
+              name="password"
+              required
+              autocomplete="current-password"
+              (focus)="onFieldFocus('password')"
+              (blur)="onFieldBlur()"
+            />
+            <button 
+              type="button" 
+              class="password-toggle-btn" 
+              (click)="toggleShowPassword()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              <lucide-icon 
+                [name]="showPassword ? 'eye-off' : 'eye'" 
+                class="eye-icon"
+              ></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <ion-button
+          type="submit"
+          class="signin-button"
+          expand="block"
+          [disabled]="!loginForm.form.valid || isLoading"
+        >
+           Login
+        </ion-button>
+
+        <div class="forgot-password-container">
+          <ion-button fill="clear" class="forgot-password-button" (click)="forgotPassword()" *ngIf="false">
+            Forgot password?
+          </ion-button>
+        </div>
+
+        <div class="divider-container">
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="create-account-container">
+          <ion-button fill="clear" class="create-account-button" routerLink="/role-selection">
+            Create your first account
+          </ion-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="transparent-footer" mode="md" translucent>
+  <ion-toolbar>
+    <ion-title class="footer-title">© 2025 XPASYO</ion-title>
+  </ion-toolbar>
+</ion-footer>

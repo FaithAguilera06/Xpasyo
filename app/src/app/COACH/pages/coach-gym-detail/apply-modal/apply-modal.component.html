@@ -1,0 +1,197 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button
+        (click)="dismiss('back')"
+        style="--color: white; font-size: 24px"
+      >
+        <lucide-icon
+          name="arrow-left"
+          slot="icon-only"
+          style="font-size: 24px"
+          color="white"
+        ></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Apply to {{ gymName }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="dismiss('cancel')"
+        style="--color: white; font-size: 24px"
+      >
+        <lucide-icon
+          name="x"
+          slot="icon-only"
+          style="font-size: 24px"
+        ></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form (ngSubmit)="submitApplication()" #applyForm="ngForm">
+    
+    <!-- Section 1: Class Details -->
+    <div class="section-container">
+      <h2 class="section-title">Class Details</h2>
+      
+      <!-- Class Selection -->
+      <ion-item>
+        <ion-label position="fixed" class="required-field">Select Class:</ion-label>
+        <ion-select
+          (ionChange)="onClassSelected($event)"
+          interface="action-sheet"
+          required
+        >
+          <ion-select-option value="" disabled selected hidden>Choose a class...</ion-select-option>
+          <ion-select-option
+            *ngFor="let option of classOptions"
+            [value]="option.name + '|' + option.day + '|' + option.time"
+          >
+            {{ option.name }} ({{ option.day | titlecase }} at {{ option.time }})
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Day (readonly) -->
+      <ion-item>
+        <ion-label position="fixed">Day: </ion-label>
+        <ion-input [value]="applicationData.day | titlecase" readonly></ion-input>
+      </ion-item>
+
+      <!-- Time (readonly) -->
+      <ion-item>
+        <ion-label position="fixed">Time:</ion-label>
+        <ion-input [value]="applicationData.time" readonly></ion-input>
+      </ion-item>
+
+      <!-- Date Picker -->
+      <ion-item>
+        <ion-label position="fixed" class="required-field">Class Date:</ion-label>
+        <ion-input [value]="applicationData.date ? (applicationData.date | date : 'mediumDate') : ''" readonly (click)="$event.preventDefault(); $event.stopPropagation();"></ion-input>
+        <ion-datetime-button slot="end" datetime="classDate"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime
+              #classDate
+              id="classDate"
+              [(ngModel)]="applicationData.date"
+              name="date"
+              [min]="minDate"
+              [max]="maxDate"
+              [isDateEnabled]="isDateEnabled"
+              [presentation]="'date'"
+              [firstDayOfWeek]="1"
+              [showDefaultButtons]="true"
+              [showDefaultTitle]="true"
+              [doneText]="'Select'"
+              [cancelText]="'Cancel'"
+              (ionChange)="onDateSelected($event)"
+            >
+              <div slot="time-label" class="time-label">
+                <ion-note color="medium" *ngIf="!applicationData.day">
+                  Select a class first to choose a date
+                </ion-note>
+                <ion-note color="primary" *ngIf="applicationData.day">
+                  Available on {{ applicationData.day | titlecase }}s only
+                </ion-note>
+              </div>
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <!-- Max Students -->
+      <ion-item>
+        <ion-label position="floating" class="required-field"
+          >Maximum Number of Participants</ion-label
+        >
+        <ion-input
+          type="number"
+          [(ngModel)]="applicationData.maxStudents"
+          name="maxStudents"
+          min="1"
+          required
+        >
+        </ion-input>
+      </ion-item>
+    </div>
+
+    <!-- Section 2: Payment Information -->
+    <div class="section-container">
+      <h2 class="section-title">Payment Information</h2>
+      
+      <!-- Payment Account Information -->
+      <div *ngIf="gcashAccountNumber" class="payment-account-info">
+        <!-- Account Name -->
+        <ion-item *ngIf="gcashAccountName">
+          <ion-label>Account Name:</ion-label>
+          <ion-text>{{ gcashAccountName }}</ion-text>
+        </ion-item>
+        
+        <!-- Payment Account Number -->
+        <ion-item>
+          <ion-label>Payment Account Number:</ion-label>
+          <ion-text>{{ gcashAccountNumber }}</ion-text>
+        </ion-item>
+      </div>
+
+      <!-- Venue Fee Section -->
+      <ion-item>
+        <ion-label>Venue Fee:</ion-label>
+        <ion-text>₱{{ applicationData.venueFee }}</ion-text>
+      </ion-item>
+
+      <!-- Coach Fee -->
+      <ion-item>
+        <ion-label position="floating" class="required-field"
+          >Your Fee (₱)</ion-label
+        >
+        <ion-input
+          type="number"
+          [(ngModel)]="applicationData.fee"
+          name="fee"
+          min="0"
+          required
+        >
+        </ion-input>
+      </ion-item>
+
+      <!-- Class Fee Calculation Note -->
+      <ion-text name="tooltip">
+        Note: The class fee each student will pay is calculated as: (Venue Fee +
+        Coach Fee) ÷ Maximum Number of Students
+      </ion-text>
+
+      <!-- Total Fee -->
+      <div class="total-fee">
+        <div class="label">Total Amount to be Paid</div>
+        <div class="amount">₱{{ applicationData.venueFee || "0" }}</div>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+      <!-- Submit Button -->
+      <ion-button
+        expand="block"
+        type="submit"
+        class="ion-margin-top"
+        [disabled]="!applyForm.form.valid || isSubmitting"
+      >
+        <ion-spinner *ngIf="isSubmitting" name="lines"></ion-spinner>
+        <span *ngIf="!isSubmitting">Submit Application</span>
+      </ion-button>
+
+      <!-- Form Validation Messages -->
+      <ion-note
+        color="danger"
+        class="ion-text-center ion-margin-top"
+        *ngIf="applyForm.submitted && !applyForm.valid"
+      >
+        Please fill in all required fields
+      </ion-note>
+    </div>
+  </form>
+</ion-content>

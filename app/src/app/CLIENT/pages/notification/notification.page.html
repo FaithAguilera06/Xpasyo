@@ -1,0 +1,115 @@
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="notification-header-actions" *ngIf="notifications.length > 0">
+    <div class="header-info">
+      <h2>Notifications ({{ notifications.length }})</h2>
+    </div>
+    <div class="header-actions">
+      <ion-button 
+        fill="clear" 
+        size="small" 
+        color="danger" 
+        (click)="confirmDeleteAll()"
+        class="bulk-delete-btn"
+      >
+        <lucide-icon name="trash-2" slot="start"></lucide-icon>
+        Delete All
+      </ion-button>
+    </div>
+  </div>
+
+  <div class="notification-container">
+    <div *ngIf="notifications.length === 0" class="no-notifications">
+      <lucide-icon name="bell-off"></lucide-icon>
+      <p>No notifications yet</p>
+    </div>
+
+    <ion-card
+      *ngFor="let notification of notifications"
+      class="notification-card"
+      [class.unread]="notification.status === 'unread'"
+      [class.clickable]="true"
+      (click)="toggleNotificationOpen(notification)"
+    >
+      <div class="notification-content">
+        <div class="notification-header">
+          <div
+            class="notification-type"
+            [ngClass]="notification.type === 'paymentupdate' ? 'payment-update' : notification.type"
+          >
+            {{ notification.type === 'paymentupdate' ? 'Payment Update' :
+            (notification.type | titlecase) }}
+          </div>
+          <div class="notification-time">
+            {{ notification.formattedTime }}
+            <button
+              class="delete-button"
+              (click)="$event.stopPropagation(); deleteNotification(notification.id, $event)"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+        <div class="notification-body">
+          <lucide-icon name="circle-check-big"></lucide-icon>
+
+          <h3 class="notification-title">
+            <ng-container *ngIf="notification.data?.action === 'payment_approved'">
+              <lucide-icon name="circle-check" style="color: #43a047 !important; margin-right: 8px;"></lucide-icon>
+            </ng-container>
+            <ng-container *ngIf="notification.data?.action === 'payment_rejected'">
+              <lucide-icon name="circle-x" style="color: #e53935 !important; margin-right: 8px;"></lucide-icon>
+            </ng-container>
+            {{ notification.title }}
+          </h3>
+          <p class="notification-message">{{ notification.message }}</p>
+          <div class="notification-date">{{ notification.formattedDate }}</div>
+          <div *ngIf="notification.type === 'paymentupdate' && notification.latestCoachName" class="notification-coach-name">
+            Coach: {{ notification.latestCoachName }}
+          </div>
+          <!-- Expand/Collapse Indicator -->
+          <div class="expand-indicator" [class.open]="notification.isOpen">
+            <lucide-icon [name]="notification.isOpen ? 'chevron-up' : 'chevron-down'"></lucide-icon>
+          </div>
+        </div>
+        <!-- Expandable Details Section -->
+        <div *ngIf="notification.isOpen" class="notification-details">
+          <div *ngIf="notification.data?.paymentProof" class="payment-proof-section">
+            <img [src]="notification.data?.paymentProof ?? ''" class="payment-proof-thumb" alt="Payment Proof" />
+            <button class="view-full-btn" (click)="openImagePreview(notification.data?.paymentProof ?? ''); $event.stopPropagation();">View Full</button>
+          </div>
+          <div *ngIf="notification.data?.className">
+            <strong>Class:</strong> {{ notification.data?.className }}
+          </div>
+          <div *ngIf="notification.data?.amount">
+            <strong>Amount:</strong> {{ notification.data?.amount | currency:'PHP' }}
+          </div>
+          <!-- Add more details as needed -->
+        </div>
+        <!-- Status indicator for payments -->
+        <div
+          *ngIf="notification.data?.action === 'payment_approved'"
+          class="status-badge approved"
+        >
+          Payment Approved
+        </div>
+        <div
+          *ngIf="notification.data?.action === 'payment_rejected'"
+          class="status-badge rejected"
+        >
+          <lucide-icon name="circle-x"></lucide-icon>
+          Payment Rejected
+        </div>
+      </div>
+    </ion-card>
+  </div>
+
+  <!-- Image Preview Overlay -->
+  <div *ngIf="isImagePreviewOpen" class="image-preview-overlay" (click)="closeImagePreview()">
+    <img [src]="previewImageUrl" alt="Payment Proof" (click)="$event.stopPropagation()" />
+    <button class="close-btn" (click)="closeImagePreview(); $event.stopPropagation();">&times;</button>
+  </div>
+</ion-content>

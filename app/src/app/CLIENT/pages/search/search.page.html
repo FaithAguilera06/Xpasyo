@@ -1,0 +1,242 @@
+<ion-content scroll-y="false">
+  <div class="searchbar-row">
+    <button class="searchbar-back-btn" (click)="goBack()">
+      <lucide-icon name="chevron-left"></lucide-icon>
+    </button>
+    <!-- No filter button in the header -->
+  </div>
+  <div class="content-wrapper fade-in">
+    <h2 class="section-title">Suggested Destination</h2>
+    <div class="fixed-top-actions">
+      <ion-item lines="none" class="pinned-row-item" button (click)="goToExplore()">
+        <div class="icon-background" slot="start">
+          <lucide-icon name="navigation"></lucide-icon>
+        </div>
+        <ion-label>
+          <h2>Nearby</h2>
+          <p>Find what's around you.</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" class="pinned-row-item" button (click)="onFilterButtonClick()">
+        <div class="icon-background" slot="start">
+          <lucide-icon name="sliders-horizontal"></lucide-icon>
+        </div>
+        <ion-label>
+          <h2>Filter</h2>
+          <p>Refine your search.</p>
+        </ion-label>
+      </ion-item>
+    </div>
+    <div class="initial-state redesigned-intro" *ngIf="!hasSearchedOrFiltered">
+      <div class="intro-card">
+        <div class="intro-headline">Let’s get you moving! <span class="emoji">🏋️‍♀️</span><br><span class="headline-secondary">Your fitness journey starts here.</span></div>
+        <div class="intro-desc">
+          Use the filters and quick actions above to discover gyms near you, explore by location, or jump straight into booking a class.<br>
+          Whether you're into yoga, lifting, or high-intensity training, we’ll help you find the perfect spot to break a sweat — fast.
+        </div>
+        <div class="intro-tip">The more you explore, the better your matches get. <br> <span>Let’s find the gym that fits your goals.</span></div>
+      </div>
+      <div class="initial-actions">
+        <div class="action-row">
+          <lucide-icon name="map-pin"></lucide-icon>
+          <span>Tap <b>‘Explore Nearby’</b> to use your current location and see gyms around you instantly.</span>
+        </div>
+        <div class="action-row">
+          <lucide-icon name="clock"></lucide-icon>
+          <span>Or customize your search using filters for workout type, schedule, pricing, and more.</span>
+        </div>
+      </div>
+    </div>
+    <div class="scrollable-results">
+      <!-- Unified Gym Card Grid/List -->
+      <div class="gym-list">
+        <!-- No Gyms Found for Criteria -->
+        <div class="empty-state" *ngIf="filteredGyms.length === 0 && suggestedGyms.length === 0 && !isLoading">
+          <h3>No Gyms Found</h3>
+          <p>No gyms found for your selected criteria.</p>
+        </div>
+        <!-- No Exact Match Message for Suggestions -->
+        <div class="no-exact-match-message" *ngIf="filteredGyms.length === 0 && suggestedGyms.length > 0">
+          <div class="no-match-card">
+            <lucide-icon name="circle-alert" class="no-match-icon"></lucide-icon>
+            <h3>No gyms found for your selected criteria: {{ getSelectedCriteria() }}</h3>
+            <p>Showing <b>suggested gyms</b> below based on your selections.</p>
+          </div>
+        </div>
+        <div class="suggested-divider" *ngIf="filteredGyms.length === 0 && suggestedGyms.length > 0">
+          <span>Suggested Gyms</span>
+        </div>
+        <!-- Suggested Gyms Section -->
+        <ion-card *ngFor="let gym of suggestedGyms" (click)="viewGymDetails(gym.id)" class="gym-card suggested">
+          <img [src]="gym.gym_logo?.data || 'assets/images/default-gym.png'" [alt]="'Logo of ' + gym.gymInfo.name" [title]="gym.gymInfo.name" (error)="handleImageError($event, gym)" />
+          <ion-card-header>
+            <div class="header-content">
+              <ion-card-title>{{ gym.gymInfo.name }}</ion-card-title>
+              <div class="price-display" *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0">
+                {{ gym.gymInfo.classTypes[0].price_display || 'Price on request' }}
+              </div>
+            </div>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="gym-details">
+              <div class="detail" *ngIf="gym.gymInfo.district">
+                <lucide-icon name="map-pin"></lucide-icon>
+                <span>{{ gym.gymInfo.district }}</span>
+              </div>
+              <div class="detail" *ngIf="gym.gymInfo.fitnessType || gym.gymInfo.size">
+                <lucide-icon name="users"></lucide-icon>
+                <span>
+                  {{ gym.gymInfo.fitnessType }}<span *ngIf="gym.gymInfo.fitnessType && gym.gymInfo.size">, </span>{{ gym.gymInfo.size }}
+                </span>
+              </div>
+              <div class="class-types" *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0">
+                <div class="available-classes-label">Available classes:</div>
+                <div class="class-types-row">
+                  <div class="class-type" *ngFor="let classType of gym.gymInfo.classTypes">
+                    <span>{{ classType.name }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="detail" *ngIf="!gym.gymInfo.classTypes || gym.gymInfo.classTypes.length === 0">
+                <lucide-icon name="circle-alert"></lucide-icon>
+                <span>No class types available</span>
+              </div>
+            </div>
+            <div class="button-container">
+              <ion-button expand="block" fill="clear" class="view-button custom-view-button" (click)="viewGymDetails(gym.id)">
+                View Details
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <!-- Gym Cards (Exact Matches) -->
+        <ion-card *ngFor="let gym of filteredGyms" (click)="viewGymDetails(gym.id)" class="gym-card">
+          <img [src]="gym.gym_logo?.data || 'assets/images/default-gym.png'" [alt]="'Logo of ' + gym.gymInfo.name" [title]="gym.gymInfo.name" (error)="handleImageError($event, gym)" />
+          <ion-card-header>
+            <div class="header-content">
+              <ion-card-title>{{ gym.gymInfo.name }}</ion-card-title>
+              <div class="price-display" *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0">
+                {{ gym.gymInfo.classTypes[0].price_display || 'Price on request' }}
+              </div>
+            </div>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="gym-details">
+              <div class="detail" *ngIf="gym.gymInfo.district">
+                <lucide-icon name="map-pin"></lucide-icon>
+                <span>{{ gym.gymInfo.district }}</span>
+              </div>
+              <div class="detail" *ngIf="gym.gymInfo.fitnessType || gym.gymInfo.size">
+                <lucide-icon name="users"></lucide-icon>
+                <span>
+                  {{ gym.gymInfo.fitnessType }}<span *ngIf="gym.gymInfo.fitnessType && gym.gymInfo.size">, </span>{{ gym.gymInfo.size }}
+                </span>
+              </div>
+              <div class="class-types" *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0">
+                <div class="available-classes-label">Available classes:</div>
+                <div class="class-types-row">
+                  <div class="class-type" *ngFor="let classType of gym.gymInfo.classTypes">
+                    <span>{{ classType.name }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="detail" *ngIf="!gym.gymInfo.classTypes || gym.gymInfo.classTypes.length === 0">
+                <lucide-icon name="circle-alert"></lucide-icon>
+                <span>No class types available</span>
+              </div>
+            </div>
+            <div class="button-container">
+              <ion-button expand="block" fill="clear" class="view-button custom-view-button" (click)="viewGymDetails(gym.id)">
+                View Details
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Card Sheet for Class Type and District Filter -->
+<div *ngIf="showClassTypeSheet" class="card-sheet-overlay" (click)="closeClassTypeSheet()">
+  <div class="card-sheet" (click)="$event.stopPropagation()">
+    <div class="card-sheet-body" #cardSheetBody>
+      <ion-button fill="clear" class="filter-back-btn" (click)="closeClassTypeSheet()">
+        <lucide-icon name="chevron-left"></lucide-icon>
+      </ion-button>
+      <span class="card-sheet-title">Preference</span>
+      <div class="filter-section">
+        <h3>Class Types</h3>
+        <div class="options-container">
+          <button *ngFor="let classType of filterService.classTypes"
+                  class="pill-btn"
+                  [class.selected]="filter.selectedClass === classType"
+                  (click)="toggleClassType(classType)">
+            {{ classType }}
+          </button>
+        </div>
+      </div>
+      <div class="filter-section">
+        <h3>Districts</h3>
+        <div class="options-container">
+          <button *ngFor="let district of filterService.districts"
+                  class="pill-btn"
+                  [class.selected]="filter.selectedDistrict === district"
+                  (click)="toggleDistrict(district)">
+            {{ district }}
+          </button>
+        </div>
+      </div>
+      <div class="filter-section">
+        <h3>Sizes</h3>
+        <div class="options-container">
+          <button *ngFor="let size of filterService.sizes"
+                  class="pill-btn"
+                  [class.selected]="filter.selectedSize === size"
+                  (click)="toggleSize(size)">
+            {{ size }}
+          </button>
+        </div>
+      </div>
+      <div class="filter-section price-range">
+        <h3>Price Range</h3>
+        <div class="price-inputs-container">
+          <div class="price-input-wrapper">
+            <input
+              #minPriceInput
+              type="number"
+              class="pill-input"
+              placeholder="0"
+              [(ngModel)]="filter.minPrice"
+              (ionChange)="onTempMinPriceChange()"
+              (focus)="scrollInputIntoView(minPriceInputRef)"
+            />
+            <div class="input-label">Min</div>
+          </div>
+          <div class="price-input-wrapper">
+            <input
+              #maxPriceInput
+              type="number"
+              class="pill-input"
+              placeholder="0"
+              [(ngModel)]="filter.maxPrice"
+              (ionChange)="onTempMaxPriceChange()"
+              (focus)="scrollInputIntoView(maxPriceInputRef)"
+            />
+            <div class="input-label">Max</div>
+          </div>
+        </div>
+        <div class="price-error" *ngIf="filter.minPrice > 0 && filter.maxPrice > 0 && filter.maxPrice < filter.minPrice">
+          Max price should be greater than or equal to Min price.
+        </div>
+      </div>
+    </div>
+    <div class="card-sheet-footer">
+      <div class="footer-buttons-row">
+        <button class="footer-clear-btn" (click)="clearTempFilters()">Clear</button>
+        <button class="footer-apply-btn" (click)="applyClassTypeFilter()">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+

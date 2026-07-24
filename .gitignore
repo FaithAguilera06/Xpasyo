@@ -1,45 +1,37 @@
-﻿# Dependencies
-/vendor/
+﻿# Web (PHP)
+web/vendor/
+web/json_files/serviceAccountKey.json
+
+# App (Ionic/Angular)
+app/node_modules/
+app/www/
+app/.angular/
+app/platforms/
+app/dist/
+app/.ionic/
+app/coverage/
+app/.sourcemaps/
+app/.versions/
+app/tmp/
+app/out-tsc/
 
 # Environment files
 .env
 *.env.*
 !.env.example
 
-# Firebase / Google Cloud credentials
-json_files/serviceAccountKey.json
-
 # Logs
 *.log
 
-# IDE specific files
+# IDE
 .idea/
 .vscode/
 *.sublime-project
 *.sublime-workspace
 
-# OS generated files
+# OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Local development
-*.local
-
 # Composer
-composer.lock
 composer.phar
-
-# Node modules (if any)
-node_modules/
-
-# Build directories
-/build/
-/dist/
-
-# Cache
-.cache/

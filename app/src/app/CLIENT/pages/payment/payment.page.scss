@@ -1,0 +1,356 @@
+/* Client Payment Page Styles (adapted from Coach) */
+ion-content {
+  --background: #f8f9fa;
+}
+
+.payment-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: env(safe-area-inset-bottom, 180px); // increased for tab safety
+}
+
+.info-card, .amount-card, .proof-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.info-card {
+  width: 100%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  ion-card-content {
+    padding: 24px 18px;
+  }
+  .class-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: 0.7em;
+    color: #222;
+    text-align: left;
+  }
+  .class-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.7em;
+  }
+  .class-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #222;
+  }
+  .venue-fee-inline {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #FFC409;
+    margin-left: 1em;
+  }
+  .class-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    margin-bottom: 1em;
+    div {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 1em;
+      color: #555;
+      lucide-icon[name="clock"] { color: #f8b400; }
+      lucide-icon[name="map-pin"] { color: #2ecc40; }
+    }
+  }
+  .class-details lucide-icon {
+    color: #111 !important;
+  }
+  .section-divider {
+    border-bottom: 1px solid #eee;
+    margin: 1em 0;
+  }
+  .section-label {
+    font-size: 1em;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 0.3em;
+  }
+  .gcash-info {
+    background: none !important;
+    border-radius: 10px;
+    padding: 1em;
+    margin-bottom: 1em;
+    .gcash-account-name {
+      font-size: 0.98em;
+      color: #444;
+      margin-bottom: 0.2em;
+    }
+    .gcash-row {
+      display: flex;
+      align-items: center;
+      font-size: 0.97em;
+      gap: 0.3em;
+      margin-bottom: 0.2em;
+      .gcash-label, .gcash-value, .gcash-number, .gcash-sep {
+        font-size: inherit;
+        line-height: 1.2;
+      }
+      .gcash-label {
+        color: #888;
+        font-weight: 400;
+        margin-right: 0.2em;
+      }
+      .gcash-value {
+        font-weight: 700;
+        color: #111;
+        margin-right: 0.5em;
+      }
+      .gcash-sep {
+        color: #888;
+        margin: 0 0.5em;
+      }
+      .gcash-number {
+        font-family: 'Courier New', monospace;
+        font-weight: 700;
+        color: #111;
+        margin-right: 0.3em;
+        font-size: 1.15em;
+      }
+      .copy-btn {
+        background: transparent !important;
+        border-radius: 6px;
+        padding: 1px 4px;
+        min-width: 22px;
+        min-height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        --background: transparent !important;
+        --color: #666 !important;
+        margin-left: 0.15em;
+      }
+      .copy-btn lucide-icon {
+        color: #666 !important;
+        font-size: 0.95em;
+      }
+    }
+    .gcash-note {
+      font-size: 0.9em;
+      color: #888;
+      font-style: italic;
+      margin-top: 0.3em;
+      text-align: center;
+    }
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e6f9e6;
+    border-radius: 8px;
+    padding: 0.7em 1em;
+    .total-label { font-size: 1.1em; font-weight: 600; color: #222; }
+    .total-amount { font-size: 1.3em; font-weight: 800; color: #FFC409; }
+  }
+}
+
+.proof-card {
+  width: 100%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  ion-card-header {
+    padding: 16px 20px;
+   
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    ion-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #222;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+  }
+  ion-card-content {
+    padding: 20px 16px;
+    .proof-instructions {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #888;
+      font-size: 0.98em;
+      p { margin: 8px 0; }
+    }
+    .upload-cta-row {
+      border: 2px dashed #f8b400;
+      border-radius: 10px;
+      padding: 6px 0;
+      text-align: center;
+      cursor: pointer;
+      background: #fffbe6;
+      margin-bottom: 1.2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      &:active { background: #fff9e3; }
+      lucide-icon {
+        font-size: 1.1em;
+        color: #f8b400;
+        margin-bottom: 0.15em;
+      }
+      span {
+        font-size: 0.85em;
+        color: #333;
+        font-weight: 500;
+      }
+    }
+    .accepted-formats-note {
+      font-size: 0.95em;
+      color: #666;
+      margin-bottom: 1em;
+    }
+    .file-preview {
+      display: flex;
+      align-items: center;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 16px;
+      lucide-icon {
+        font-size: 1.5rem;
+        color: #6c757d;
+        margin-right: 12px;
+      }
+      span {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.98em;
+        color: #555;
+      }
+      ion-button {
+        --padding-start: 8px;
+        --padding-end: 8px;
+        --padding-top: 0;
+        --padding-bottom: 0;
+        margin: 0;
+        height: auto;
+      }
+    }
+  }
+}
+
+.proof-submit-container {
+  margin-top: 28px;
+}
+
+.submit-btn {
+  background: #000 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  width: auto !important;
+  min-width: 80px;
+  max-width: 160px;
+  font-size: 0.95em;
+  padding: 0.2em 1em;
+  border-radius: 8px;
+  align-self: center;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.submit-btn[disabled], button.submit-btn[disabled] {
+  background: #888 !important;
+  color: #fff !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+.back-btn {
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back-btn lucide-icon {
+  font-size: 1.3em;
+  color: #222;
+}
+
+.info-card-header-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.7em;
+  justify-content: space-between;
+}
+.info-card-title {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #222;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: right;
+  flex: 1;
+}
+
+.proof-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .payment-container {
+    padding: 0 12px 80px 12px;
+  }
+  .info-card ion-card-content {
+    padding: 16px 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .payment-container,
+  .info-card,
+  .proof-card {
+    max-width: 98vw;
+    padding-left: 4vw;
+    padding-right: 4vw;
+  }
+  .info-card ion-card-content,
+  .proof-card ion-card-content {
+    padding: 12px 4vw;
+  }
+}
+@media (max-width: 400px) {
+  .payment-container,
+  .info-card,
+  .proof-card {
+    max-width: 100vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+  }
+  .info-card ion-card-content,
+  .proof-card ion-card-content {
+    padding: 8px 2vw;
+  }
+  .submit-btn {
+    min-width: 60px;
+    max-width: 100vw;
+    font-size: 0.9em;
+    padding: 0.15em 0.5em;
+  }
+}

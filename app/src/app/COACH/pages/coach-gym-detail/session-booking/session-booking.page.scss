@@ -1,0 +1,511 @@
+// Page layout
+.page {
+  min-height: 100vh;
+  background-color: #f3f4f6; // bg-gray-100
+  padding-bottom: 96px; // Extra space for scrollable content
+}
+
+// Header styles
+.header {
+  background-color: #000000; // bg-black
+  color: #ffffff;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.header__title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+// Card styles
+.card {
+  background-color: #ffffff;
+  border-radius: 0.5rem; // rounded-lg
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);
+}
+
+.card--padded {
+  padding: 1.5rem;
+}
+
+// Button styles
+.button--primary {
+  background-color: #2563eb; // bg-blue-600
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 200ms ease;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.button--primary:hover {
+  background-color: #1d4ed8; // bg-blue-700
+}
+
+.button--disabled {
+  background-color: #9ca3af; // bg-gray-400
+  cursor: not-allowed;
+}
+
+// Input styles
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db; // border-gray-300
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background-color: #ffffff;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgb(37 99 235 / .3); // focus:ring-2 focus:ring-blue-500
+}
+
+// Success alert
+.alert--success {
+  background-color: #dcfce7; // bg-green-100
+  color: #16a34a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem auto;
+}
+
+// Accordion styles
+.accordion__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.accordion__content {
+  padding: 1rem;
+  background-color: #f9fafb; // bg-gray-50
+  border-top: 1px solid #e5e7eb;
+}
+
+// Note styles
+.note {
+  background-color: #eff6ff; // bg-blue-50
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #1e40af;
+  margin-bottom: 1rem;
+}
+
+// Additional utility classes
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+// Form group styles
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+// Select styles
+select {
+  @extend .input;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  color: #111827 !important; // Force black text
+  background-color: #ffffff !important; // Force white background
+  font-size: 1rem !important;
+}
+
+// Ensure select options are visible
+select option {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+  font-size: 1rem !important;
+}
+
+// Fix for selected option text color
+select:focus {
+  color: #111827 !important;
+}
+
+// Additional styling to ensure text visibility
+select option:checked {
+  color: #111827 !important;
+  background-color: #f3f4f6 !important;
+}
+
+select option:hover {
+  background-color: #f9fafb !important;
+}
+
+// Override any Ionic or browser default styles
+select,
+select:focus,
+select:active,
+select:hover {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+// Target the specific select in our form
+.form-group select {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+.form-group select:focus {
+  color: #111827 !important;
+}
+
+.form-group select option {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+// Additional specificity for the class selection dropdown
+.form-group select[name="className"] {
+  color: #111827 !important;
+}
+
+.form-group select[name="className"] option {
+  color: #111827 !important;
+}
+
+.form-group select[name="className"] option[value=""] {
+  color: #6b7280 !important; // Gray for placeholder
+}
+
+// Date picker styles
+.date-picker-container {
+  margin-bottom: 1rem;
+}
+
+.date-display {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+// Payment section styles
+.payment-section {
+  margin-top: 1.5rem;
+}
+
+.payment-info {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.payment-row:last-child {
+  border-bottom: none;
+}
+
+// Footer styles - removed since button is now inside container
+// .footer {
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   background-color: #ffffff;
+//   border-top: 1px solid #e5e7eb;
+//   padding: 1rem;
+//   z-index: 10;
+// }
+
+// Loading styles
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Booking row and column layout
+.booking-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.booking-col {
+  flex: 1;
+  min-width: 0;
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .card--padded {
+    padding: 1rem;
+  }
+  
+  .button--primary {
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .input {
+    padding: 0.625rem 0.875rem;
+  }
+
+  
+
+  .p-4 {
+    padding: 0.75rem;
+  }
+
+  .mb-6 {
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    margin-bottom: 0.375rem;
+  }
+
+  // Header improvements for mobile
+  .flex.items-center.justify-between {
+    gap: 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.125rem;
+  }
+
+  // Button improvements for mobile
+  .button--primary {
+    font-size: 0.875rem;
+    min-height: 48px; // Touch-friendly
+  }
+
+  // Booking row responsive layout
+  .booking-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .booking-col {
+    width: 100%;
+  }
+
+  // Date picker improvements
+  ion-datetime {
+    --background: #ffffff;
+    --color: #111827;
+    --border-radius: 0.5rem;
+  }
+
+  // Payment section improvements
+  .payment-section {
+    margin-top: 1rem;
+  }
+
+  .payment-info {
+    padding: 0.75rem;
+  }
+
+  .payment-row {
+    padding: 0.375rem 0;
+    font-size: 0.875rem;
+  }
+
+  .note {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  // Loading improvements
+  .loading {
+    min-height: 150px;
+  }
+
+  .loading-spinner {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+// Extra small screens
+@media (max-width: 480px) {
+  .p-4 {
+    padding: 0.5rem;
+  }
+
+  .card--padded {
+    padding: 0.75rem;
+  }
+
+  .button--primary {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .form-label {
+    font-size: 0.8125rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  // Ensure content is scrollable
+  ion-content {
+    --overflow: auto;
+  }
+
+  .card {
+    margin-bottom: 0.75rem;
+  }
+
+  .mb-6 {
+    margin-bottom: 0.75rem;
+  }
+}
+
+// Landscape orientation adjustments
+@media (max-width: 768px) and (orientation: landscape) {
+
+}
+
+// Ensure proper spacing for iOS safe areas
+@supports (padding: max(0px)) {
+  // .footer {
+  //   padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  // }
+} 
+
+.custom-mat-form {
+  width: 100%;
+}
+
+.custom-mat-input {
+  width: 100%;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / .05);
+  font-size: 1rem;
+}
+
+.custom-mat-input .mat-form-field-outline {
+  border-radius: 0.5rem;
+  border-color: #d1d5db !important; // gray-300
+}
+
+.custom-mat-input .mat-form-field-outline-thick {
+  border-color: #2563eb !important; // blue-600 on focus
+}
+
+.custom-mat-input .mat-form-field-label {
+  color: #374151 !important; // gray-700
+  font-size: 0.95rem;
+}
+
+.custom-mat-input .mat-input-element {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background: #fff;
+  color: #111827;
+}
+
+.custom-mat-input .mat-form-field-underline {
+  display: none;
+}
+
+.custom-mat-input .mat-form-field-flex {
+  background: #fff;
+  border-radius: 0.5rem;
+}
+
+.custom-mat-input .mat-datepicker-toggle {
+  color: #2563eb !important;
+} 
+
+::ng-deep .blocked-date .mat-calendar-body-cell-content {
+  background-color: #ffe066 !important; // Soft yellow
+  color: #b58900 !important;            // Dark yellow text for contrast
+  border-radius: 50%;
+} 

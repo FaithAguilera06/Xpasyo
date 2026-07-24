@@ -1,0 +1,315 @@
+<ion-content [fullscreen]="true" class="page">
+  <div class="p-4">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div *ngIf="!isLoading">
+      <div class="card card--padded mb-6">
+        <!-- Back Arrow and Title -->
+        <div class="flex items-center justify-between mb-6">
+          <button 
+            (click)="goBack()" 
+            class="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+            style="background: none; border: none; cursor: pointer; padding: 0.75rem; min-height: 44px; min-width: 44px;"
+          >
+            <lucide-icon name="arrow-left" size="20" style="color: #111827;"></lucide-icon>
+          </button>
+          <h2 class="text-center" style="flex: 1; margin: 0; font-size: 1.125rem;">Apply to {{ gymName }}</h2>
+          <div style="width: 60px;"></div> <!-- Spacer for centering -->
+        </div>
+        
+        <!-- Class Selection -->
+        <div class="form-group">
+          <label class="form-label">Select Class <span style="color: #ef4444;">*</span></label>
+          <select
+            class="input"
+            [(ngModel)]="bookingData.selectedClassOption"
+            name="className"
+            required
+            (change)="onClassSelected($event)"
+            style="color: #111827 !important;"
+          >
+            <option value="" disabled [selected]="!bookingData.selectedClassOption" style="color: #6b7280;">Choose a class...</option>
+            <option *ngFor="let option of classOptions" [value]="option.name + '|' + option.day + '|' + option.time">
+              {{ option.name }} ({{ option.day | titlecase }} at {{ option.time }})
+            </option>
+          </select>
+        </div>
+
+        <form (ngSubmit)="submitBooking()" #bookingForm="ngForm">
+          <!-- Class Details Section -->
+          <div class="mb-6">
+            <h3 class="form-label mb-4">Class Details</h3>
+            
+            <!-- Day & Time Display -->
+            <div class="form-group">
+              <label class="form-label">Day & Time</label>
+              <input
+                type="text"
+                [value]="bookingData.selectedClassOption ? ((bookingData.day | titlecase) + ' at ' + bookingData.time) : ''"
+                readonly
+                class="input"
+                style="background-color: #f3f4f6; color: #6b7280;"
+              />
+            </div>
+
+            <!-- Date Picker -->
+            <div class="form-group">
+              <!-- Show message if no class is selected -->
+              <div *ngIf="!bookingData.selectedClassOption" class="note">
+                <lucide-icon name="calendar" size="16"></lucide-icon>
+                Please select a class first to choose a date
+              </div>
+              <!-- Show date dropdown only when class is selected -->
+              <div *ngIf="bookingData.selectedClassOption">
+                <div class="custom-mat-form">
+                  <mat-form-field appearance="outline" class="custom-mat-input">
+                    <mat-label>Select Class Date</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="picker"
+                      [(ngModel)]="bookingData.date"
+                      name="classDate"
+                      [matDatepickerFilter]="dateFilter"
+                      placeholder="Choose a date"
+                      required
+                      readonly
+                    />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker [dateClass]="dateClass"></mat-datepicker>
+                  </mat-form-field>
+                  <div class="note" style="margin-top: 0.5em;">
+                    Only dates that fall on a {{ bookingData.day ? (bookingData.day | titlecase) : '' }} are selectable.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Application Details Section -->
+          <div class="mb-6">
+            <h3 class="form-label mb-4">Application Details</h3>
+            
+            <!-- Horizontal layout for mobile -->
+            <div class="booking-row">
+              <div class="booking-col">
+                <label class="form-label">Max Participants <span style="color: #ef4444;">*</span></label>
+                <input
+                  type="number"
+                  min="1"
+                  [(ngModel)]="bookingData.maxStudents"
+                  name="maxStudents"
+                  required
+                  class="input"
+                  placeholder="Enter max participants"
+                />
+              </div>
+              <div class="booking-col">
+                <label class="form-label">Your Fee (₱) <span style="color: #ef4444;">*</span></label>
+                <input
+                  type="number"
+                  min="0"
+                  [(ngModel)]="bookingData.fee"
+                  name="fee"
+                  required
+                  class="input"
+                  placeholder="Enter your fee"
+                />
+              </div>
+            </div>
+
+            <!-- Venue Fee (Full Width) -->
+            <div class="form-group">
+              <label class="form-label">Venue Fee (₱)</label>
+              <input
+                type="text"
+                [value]="bookingData.venueFee ? '₱' + bookingData.venueFee : '₱0'"
+                readonly
+                class="input"
+                style="background-color: #f3f4f6; color: #6b7280;"
+                placeholder="Venue fee will appear here"
+              />
+            </div>
+          </div>
+
+          <!-- Payment Information Section -->
+          <div class="payment-section">
+            <h3 class="form-label mb-4">
+              <lucide-icon name="credit-card" size="16"></lucide-icon>
+              Payment Information
+            </h3>
+
+            <!-- Payment Account Info -->
+            <div *ngIf="gcashAccountName || gcashAccountNumber" class="payment-info">
+              <div class="mb-2">
+                <lucide-icon name="credit-card" size="16"></lucide-icon>
+                <strong>Payment Account</strong>
+              </div>
+              <div class="payment-row" *ngIf="gcashAccountName">
+                <span>Name:</span>
+                <span>{{ gcashAccountName }}</span>
+              </div>
+              <div class="payment-row" *ngIf="gcashAccountNumber">
+                <span>Number:</span>
+                <span>{{ gcashAccountNumber }}</span>
+              </div>
+            </div>
+
+            <!-- Note -->
+            <div class="note">
+              <strong>Note:</strong> Each student pays: (Venue Fee + Coach Fee) ÷ Max Students
+              <div class="mt-2">
+                <strong>Student Fee:</strong> ₱{{ (bookingData.venueFee && bookingData.fee && bookingData.maxStudents) ? ((bookingData.venueFee + bookingData.fee) / bookingData.maxStudents) : '0.00' }} per person
+              </div>
+              <div class="mt-2">
+                <strong>Total Amount to Pay:</strong> ₱{{ bookingData.venueFee ? bookingData.venueFee : '0' }} (Venue Fee only)
+              </div>
+            </div>
+          </div>
+
+          <!-- Validation Message -->
+          <div *ngIf="bookingForm.submitted && !bookingForm.valid" class="note" style="background-color: #fef2f2; border-color: #fecaca; color: #dc2626;">
+            <lucide-icon name="circle-alert" size="16"></lucide-icon>
+            Please fill in all required fields
+          </div>
+        </form>
+
+        <!-- Terms and Conditions Accordion -->
+        <div class="mt-6">
+          <div class="card">
+            <button 
+              type="button" 
+              class="accordion__header"
+              (click)="toggleAccordion()"
+            >
+              <span>Terms and Conditions</span>
+              <lucide-icon 
+                [name]="isAccordionOpen ? 'chevron-up' : 'chevron-down'" 
+                size="20"
+                style="color: #6b7280;"
+              ></lucide-icon>
+            </button>
+            
+            <div 
+              class="accordion__content" 
+              [style.display]="isAccordionOpen ? 'block' : 'none'"
+              #termsContent
+            >
+              <div style="max-height: 200px; overflow-y: auto; padding-right: 8px;">
+                <h4 style="font-weight: 600; margin-bottom: 1rem; color: #111827;">XPASYO – Terms and Conditions</h4>
+                <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 1rem;">
+                  By using the XPASYO application and offering classes or group activities as a Coach, you agree to the following terms and conditions:
+                </p>
+                
+                <div style="margin-bottom: 1rem;">
+                  <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: #374151;">1. Class and Venue Fees</h5>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    1.1. As a Coach, you are responsible for calculating the total class fee, which includes your service fee and the venue booking fee. This total will then be divided by the projected number of clients to determine the per-client estimated fee displayed in the app.
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 1rem;">
+                    1.2. Minimum Participant Fee Requirement: You acknowledge that your total required fee for a class depends on the number of participants. If a class does not meet its projected total number of participants, clients within that class may be required to pay an additional amount to ensure your total required fee is fulfilled.
+                  </p>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                  <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: #374151;">2. Payment Requirements & Deadline</h5>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    2.1. Venue Booking Payment Deadline: Coaches are required to pay the fee for booking the gym venue at least three (3) weeks prior to the scheduled class date. Failure to meet this deadline may result in the cancellation of your venue booking and subsequently, your class.
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 1rem;">
+                    2.2. Payment Details: All necessary payment details for venue booking will be made visible within the XPASYO app when you proceed with the payment process.
+                  </p>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                  <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: #374151;">3. Cancellation and Refund Policy (Coach)</h5>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    3.1. Payment Verification for Refunds to Clients: As a Coach, you are responsible for checking and verifying client payments. You have the right to reject a client's payment if the submitted receipt is deemed illegitimate or if the gym owner confirms no payment has been received for the class booking. Such situations may lead to the client not being able to continue with the class, even if they initially joined in the app.
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    3.2. Class Cancellation by Coach/XPASYO:
+                  </p>
+                  <ul style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 1rem; padding-left: 1rem;">
+                    <li style="margin-bottom: 0.5rem;">Possible reasons for class rejection or cancellation include, but are not limited to, the gym owner having a prior event, or the specific date and time slot for practice being unavailable during booking or on the day of the class.</li>
+                    <li style="margin-bottom: 0.5rem;">If a class is canceled due to reasons attributable to the Coach or venue, the Coach is responsible for ensuring clients receive full refunds as per XPASYO's client refund policy.</li>
+                  </ul>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                  <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: #374151;">4. Coach Journey (Process)</h5>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    4.1. Venue & Class Setup: As a Coach, your process involves searching for a suitable gym venue, defining the class type, location, and schedule within the XPASYO app.
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    4.2. Venue Booking & Confirmation: You must first pay the fee for booking the gym venue by the specified deadline (3 weeks prior to class). You will then await confirmation of the venue booking.
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    4.3. Class Activation: If your venue booking is approved, you may then activate your class within the XPASYO app, making it available for client enrollment. If your booking is rejected, please refer to the cancellation terms and conditions for ruling.
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    4.4. Client Payment Verification: You are responsible for actively checking and verifying client payments for your classes. You may reject a client's payment if the verification process indicates an issue (e.g., illegitimate receipt, non-receipt of funds by the gym owner).
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 1rem;">
+                    4.5. Conducting the Class: Once payments are confirmed and the class is active, you will conduct the class as scheduled, promoting a positive and fit experience for clients.
+                  </p>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                  <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: #374151;">5. Prohibited Conduct</h5>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 1rem;">
+                    5.1. XPASYO has a zero-tolerance policy for fraud. Scamming, using dummy accounts, or engaging in any fraudulent behavior (including but not limited to misrepresenting venue availability, failing to deliver scheduled classes, or engaging in payment fraud) will result in immediate suspension or permanent banning from the application.
+                  </p>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                  <h5 style="font-weight: 600; margin-bottom: 0.5rem; color: #374151;">6. Governing Law & Dispute Resolution (Ruling)</h5>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 0.5rem;">
+                    6.1. These Terms and Conditions shall be governed by and construed in accordance with the laws of the Republic of the Philippines.
+                  </p>
+                  <p style="font-size: 0.875rem; line-height: 1.5; color: #6b7280; margin-bottom: 1rem;">
+                    6.2. Any dispute, controversy, or claim arising out of or relating to these Terms and Conditions, or the breach, termination, or invalidity thereof, shall first be attempted to be settled amicably between the parties. If an amicable resolution cannot be reached within thirty (30) days, the dispute shall be submitted to the competent courts of Metro Manila, Philippines, to the exclusion of all other courts.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Checkbox at the bottom of terms content -->
+              <div 
+                class="mt-4 p-4" 
+                style="background-color: #f9fafb; border-top: 1px solid #e5e7eb; border-radius: 0.5rem;"
+              >
+                <label class="flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    [(ngModel)]="agreedToTerms" 
+                    class="mr-3"
+                    style="width: 18px; height: 18px; accent-color: #2563eb;"
+                  >
+                  <span style="font-size: 0.875rem; color: #374151;">
+                    I have read and agree to the Terms and Conditions
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Application Button -->
+        <div class="mt-6">
+          <button 
+            class="button--primary"
+            (click)="submitBooking()"
+          >
+            <div *ngIf="isSubmitting" class="loading-spinner" style="width: 1rem; height: 1rem; margin-right: 0.5rem;"></div>
+            <span *ngIf="!isSubmitting">Submit Application</span>
+            <span *ngIf="isSubmitting">Submitting Application...</span>
+          </button>
+        </div>
+        <!-- Bottom Spacer for scrollable content -->
+        <div style="height: 140px;"></div>
+      </div>
+    </div>
+  </div>
+</ion-content> 

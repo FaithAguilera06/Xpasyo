@@ -1,0 +1,782 @@
+/* Gym Detail Page Styling */
+/* Variables */
+:host {
+  --ion-background-color: #f8f9fa;
+  --ion-text-color: #2c3e50;
+  --primary-color: #3880ff;
+  --secondary-color: #3dc2ff;
+  --success-color: #2dd36f;
+  --warning-color: #ffc409;
+  --danger-color: #eb445a;
+  --medium-color: #666;
+  --light-color: #f4f5f8;
+  --dark-color: #222428;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Header Styling */
+ion-header {
+  ion-toolbar {
+    --background: var(--primary-color);
+    --color: white;
+    --min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    ion-buttons {
+      margin: 0;
+      order: 0;
+      flex: 0 0 auto;
+
+      ion-back-button {
+        --color: white;
+        --icon-font-size: 28px;
+        margin: 0;
+      }
+    }
+
+    ion-title {
+      font-size: 18px;
+      font-weight: 600;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      padding: 0 16px;
+      height: 56px;
+      /* Match toolbar height */
+      line-height: 56px;
+      /* Vertically center text */
+      text-align: center;
+      order: 1;
+      flex: 1 1 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+    }
+  }
+}
+
+ion-content {
+  --background: var(--ion-background-color);
+  --padding-top: 80px; /* Account for sticky header height */
+  --padding-bottom: 80px;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+
+  ion-spinner {
+    --color: var(--primary-color);
+    width: 48px;
+    height: 48px;
+  }
+
+  p {
+    margin-top: 16px;
+    color: var(--medium-color);
+    font-size: 16px;
+  }
+}
+
+/* Gym Content */
+.gym-content {
+  padding-bottom: 80px;
+  /* Space for fixed button */
+}
+
+/* Map Section */
+.map-section {
+  margin: 24px 0;
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  box-shadow: var(--box-shadow);
+
+  h2 {
+    color: #000;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  #map {
+    height: 300px;
+    width: 100%;
+    border-radius: 8px;
+    margin: 10px 0;
+    z-index: 1;
+  }
+
+  .gym-address {
+    margin-top: 12px;
+    color: var(--medium-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+
+    ion-icon {
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+  }
+}
+
+/* Description Section */
+.description-section {
+  margin: 24px 0;
+  padding: 16px;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+
+  h2 {
+    color: #000;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  .gym-description {
+    color: var(--ion-text-color);
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-line;
+  }
+}
+
+/* Gym Image */
+.gym-image {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1; /* Ensure proper layering */
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* Gym Info */
+.gym-info {
+  padding: 16px;
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--dark-color);
+  }
+
+  .gym-address {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 16px 0;
+    color: var(--medium-color);
+    font-size: 14px;
+
+    ion-icon {
+      color: var(--primary-color);
+      font-size: 16px;
+    }
+  }
+}
+
+/* Enhanced "Gym Details" section styles */
+.gym-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #333;
+  padding: 8px 0;
+}
+
+.detail-row lucide-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: #000;
+  margin-top: 1px;
+}
+
+.detail-row strong {
+  font-weight: 600;
+  color: #000;
+  min-width: 100px;
+}
+
+.detail-row span {
+  color: #555;
+  flex: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .gym-details-list {
+    gap: 12px;
+  }
+  
+  .detail-row {
+    font-size: 0.9rem;
+    gap: 10px;
+    padding: 6px 0;
+  }
+  
+  .detail-row strong {
+    min-width: 85px;
+  }
+}
+
+/* Schedule Table Styling */
+.schedule-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 16px;
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+
+    .header-cell {
+      padding: 16px 12px;
+      font-weight: 600;
+      color: #333;
+      text-align: left;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .table-body {
+    .table-row {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .table-cell {
+        padding: 16px 12px;
+        color: #555;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+
+        &:first-child {
+          font-weight: 600;
+          color: #333;
+        }
+
+        &:nth-child(2) {
+          font-weight: 500;
+        }
+
+        &:last-child {
+          color: #666;
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+}
+
+/* Apply Button Styling */
+ion-button.apply-button {
+  --border-radius: 8px !important;
+  font-weight: 600 !important;
+  --padding-top: 16px !important;
+  --padding-bottom: 16px !important;
+  --box-shadow: 0 4px 12px rgba(255, 196, 9, 0.3) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  --background: #ffc409 !important;
+  --background-hover: #e0b000 !important;
+  --background-activated: #e0b000 !important;
+  --background-focused: #e0b000 !important;
+  --color: #000 !important;
+  transition: var(--transition);
+}
+
+ion-button.custom-view-button {
+  --background: #ffc409 !important;
+  --background-hover: #e0b000 !important;
+  --background-activated: #e0b000 !important;
+  --background-focused: #e0b000 !important;
+  --color: #000 !important;
+}
+
+/* Schedule Section */
+.schedule-section {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  margin: 24px 0;
+  box-shadow: var(--box-shadow);
+
+  h2 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark-color);
+  }
+
+  .no-classes {
+    text-align: center;
+    color: var(--medium-color);
+    padding: 20px 0;
+    font-style: italic;
+
+    .debug-info {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #f8f8f8;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      text-align: left;
+      font-style: normal;
+      font-size: 12px;
+
+      pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin: 5px 0 0 0;
+        padding: 8px;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 3px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+    }
+  }
+
+  .class-schedule {
+    margin-top: 20px;
+
+    .classes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .class-item {
+        display: flex;
+        align-items: stretch;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eee;
+
+        .class-day {
+          background-color: var(--ion-color-primary);
+          color: white;
+          padding: 12px 15px;
+          font-weight: 600;
+          min-width: 100px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .class-details {
+          flex: 1;
+          padding: 12px 15px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .class-time {
+            font-weight: 500;
+            color: var(--ion-color-primary);
+            margin-right: 10px;
+            white-space: nowrap;
+          }
+
+          .class-name {
+            font-weight: 500;
+            color: var(--ion-color-dark);
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
+        @media (max-width: 480px) {
+          flex-direction: column;
+
+          .class-day {
+            width: 100%;
+            padding: 8px 10px;
+          }
+
+          .class-details {
+            width: 100%;
+            padding: 10px 15px;
+          }
+        }
+      }
+    }
+
+    .no-classes {
+      text-align: center;
+      padding: 20px;
+      color: var(--ion-color-medium);
+      font-style: italic;
+    }
+  }
+}
+
+/* Location Section */
+.location-section {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  margin: 24px 0;
+  box-shadow: var(--box-shadow);
+
+  h2 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark-color);
+  }
+
+  .map-container {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid #eee;
+  }
+
+  .address {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 0 0;
+    font-size: 14px;
+    color: var(--medium-color);
+
+    ion-icon {
+      color: var(--primary-color);
+      font-size: 16px;
+    }
+  }
+}
+
+/* Safety Section */
+.safety-section {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  margin: 24px 0;
+  box-shadow: var(--box-shadow);
+
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark-color);
+  }
+
+  p {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--medium-color);
+  }
+
+  ion-button {
+    --border-radius: 8px;
+    --border-color: var(--primary-color);
+    --color: var(--warning-color);
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    font-weight: 500;
+    font-size: 14px;
+
+    ion-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+/* Fixed Book Now Button */
+ion-footer {
+  ion-toolbar {
+    --background: white;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+
+    ion-button {
+      --background: var(--primary-color);
+      --background-hover: var(--secondary-color);
+      --background-activated: var(--secondary-color);
+      --background-focused: var(--secondary-color);
+      --border-radius: 12px;
+      --padding-top: 18px;
+      --padding-bottom: 18px;
+      font-weight: 600;
+      font-size: 16px;
+      text-transform: none;
+      letter-spacing: 0.5px;
+      margin: 0;
+      height: 56px;
+
+      ion-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+/* Responsive Styles */
+/* Apply Form Styles */
+ion-modal {
+  --width: 100%;
+  --max-width: 500px;
+  --height: auto;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+  ion-header {
+    ion-toolbar {
+      --background: var(--primary-color);
+      --color: white;
+
+      ion-title {
+        font-weight: 600;
+      }
+    }
+  }
+
+  ion-content {
+    --padding-top: 20px;
+    --padding-bottom: 20px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+  }
+
+  form {
+    ion-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      --background: transparent;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+
+      ion-label {
+        color: var(--medium-color);
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      ion-input {
+        --padding-start: 12px;
+        --padding-end: 12px;
+        --padding-top: 12px;
+        --padding-bottom: 12px;
+        --color: var(--dark-color);
+      }
+    }
+
+    ion-button[type="submit"] {
+      --background: var(--warning-color);
+      --background-hover: var(--primary-color);
+      --background-focused: var(--primary-color);
+      --background-activated: var(--primary-color);
+      --color: white;
+      --border-radius: 8px;
+      height: 48px;
+      font-weight: 600;
+      margin-top: 16px;
+      text-transform: none;
+      letter-spacing: 0.5px;
+
+      &:disabled {
+        --background: #c0c0c0;
+        --opacity: 1;
+      }
+    }
+  }
+}
+
+/* Apply Button */
+ion-footer {
+  ion-toolbar {
+    --background: white;
+    --border-width: 0 !important;
+    padding: 8px 16px 16px;
+
+    ion-button {
+      --background: var(--primary-color);
+      --background-hover: var(--primary-color);
+      --background-focused: var(--primary-color);
+      --background-activated: var(--primary-color);
+      --color: white;
+      --border-radius: 12px;
+      height: 56px;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0.5px;
+      --box-shadow: 0 4px 12px rgba(56, 128, 255, 0.3);
+
+      ion-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+/* Alert Dialogs */
+ion-alert {
+  .alert-wrapper {
+    border-radius: 16px;
+
+    .alert-head {
+      background: var(--primary-color);
+      padding: 16px;
+
+      .alert-title {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+    }
+
+    .alert-message {
+      padding: 20px 16px;
+      color: var(--medium-color);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .alert-button-group {
+      padding: 8px;
+
+      .alert-button {
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .gym-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .gym-image {
+    height: 350px;
+    border-radius: var(--border-radius);
+    margin: 16px 16px 0;
+    width: calc(100% - 32px);
+  }
+
+  .gym-info {
+    padding: 24px 32px;
+
+    h1 {
+      font-size: 28px;
+    }
+  }
+
+  .schedule-section,
+  .location-section,
+  .safety-section {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  ion-footer {
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 800px;
+
+    ion-button {
+      max-width: 800px;
+      margin: 0 auto;
+      display: block;
+    }
+  }
+}
+
+.see-more-btn {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: inherit;
+  padding: 0;
+  margin: 0 0 0 4px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: none;
+  outline: none;
+  vertical-align: baseline;
+  transition: color 0.2s, text-decoration 0.2s;
+
+  &:hover, &:focus {
+    color: #555;
+    text-decoration: underline;
+  }
+}
+
+.centered-title {
+  color: #FFC409;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  height: 100%;
+}

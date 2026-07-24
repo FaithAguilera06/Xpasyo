@@ -1,81 +1,46 @@
-# XPASYO Draft
+# XPASYO
 
-A prototype/draft project containing experimental features and proof-of-concept implementations for the XPASYO system.
+Capstone project with a PHP web admin panel and an Ionic/Angular mobile app, both connected to Firebase.
 
-## Project Structure
+## Repository Structure
 
 ```
-XPASYO_DRAFT/
-├── elements/       # Custom web components
-├── json_files/     # JSON data files and utilities
-├── pages/          # HTML pages
-├── vendor/         # Third-party libraries
-├── style.css       # Global styles
-└── knn_streetmap_rule_based.html  # Main demo page
+Xpasyo/
+├── web/    # PHP web application (admin panel, gym management)
+└── app/    # Ionic/Angular mobile app (iOS/Android)
 ```
 
-## Features
+## Web Application
 
-- 🗺️ Interactive mapping with OpenStreetMap
-- 📅 Calendar and date picker components
-- 🎨 Custom styling and theming
-- 📊 Data visualization
+PHP-based web interface for gym management, classes, notifications, and admin features.
 
-## Getting Started
+```bash
+cd web
+composer install
+php -S localhost:8000 -t .
+```
 
-### Local Development with PHP Server
+Open [http://localhost:8000/pages/INDEX.php](http://localhost:8000/pages/INDEX.php)
 
-1. **Using PHP's built-in development server:**
-   ```bash
-   # Navigate to the project root directory
-   cd path/to/XPASYO_DRAFT
-   
-   # Start PHP development server (PHP 5.4+)
-   php -S localhost:8000 -t .
-   ```
-   Then open `http://localhost:8000/pages/INDEX.php` in your browser
+See [web/README.md](web/README.md) for more details.
 
-2. **For XAMPP/WAMP/MAMP:**
-   - Place the project folder in your web server's root directory (e.g., `htdocs` or `www`)
-   - Start your local server (Apache, MySQL if needed)
-   - Access the site at `http://localhost/XPASYO_DRAFT/pages/INDEX.php`
+**Firebase setup:** Copy `web/json_files/serviceAccountKey.example.json` to `web/json_files/serviceAccountKey.json` and add your Firebase service account credentials.
 
-## Dependencies
+## Mobile Application
 
-- OpenStreetMap
-- Custom JavaScript utilities
-- External mapping libraries
+Cross-platform mobile app built with Angular, Ionic, and Capacitor.
 
-## Setting Up GitHub Repository
+```bash
+cd app
+npm install
+npm start
+```
 
-1. **Initialize Git repository (if not already done):**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   ```
+See [app/README.md](app/README.md) for build and deployment instructions.
 
-2. **Create a new repository on GitHub** (if you haven't already)
+## Deployment
 
-3. **Link your local repository to GitHub:**
-   ```bash
-   git remote add origin https://github.com/yourusername/XPASYO_DRAFT.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-4. **For existing repositories, push your changes:**
-   ```bash
-   git add .
-   git commit -m "Your commit message"
-   git push
-   ```
-
-## Development Notes
-
-- The main entry point is `pages/INDEX.php`
-- All PHP includes should use relative paths from the document root
-- For database connections, use `localhost` in development and update for production
+The web app can be deployed with Docker or Render. Configuration files live in `web/` (`Dockerfile`, `render.yaml`). The root `render.yaml` points Render to the `web/` directory.
 
 ## License
 

@@ -1,0 +1,260 @@
+.transparent-footer {
+  background: black !important;
+  --background: transparent !important; // for Ionic toolbar
+  box-shadow: none;
+}
+
+.footer-title {
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+
+.landing-content {
+  overflow: hidden;
+  height: 100vh;
+  --feature-gradient: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.18);
+  --border-radius-xl: 24px;
+  --animation-duration: 0.3s;
+  --animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --background: transparent;
+  position: relative;
+  overflow-x: hidden;
+
+  // Remove default padding
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+// Status Title Styling
+.status-title {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  color: white;
+}
+
+ion-header {
+  background-color: black !important;
+}
+
+.features-section {
+  background-color: #F9FAFF !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Hero Section
+.hero-section {
+  background: black;
+  min-height: 55vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .hero-emoji-container {
+    margin-bottom: 2rem;
+    
+    .hero-emoji {
+      font-size: 4rem;
+      color: var(--ion-color-warning);
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+      animation: heroFloat 3s ease-in-out infinite;
+    }
+  }
+
+  .hero-title {
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .hero-subtitle {
+    p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+}
+
+@keyframes backgroundShift {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(20px) translateY(-10px);
+  }
+  50% {
+    transform: translateX(-10px) translateY(20px);
+  }
+  75% {
+    transform: translateX(-20px) translateY(-5px);
+  }
+}
+
+
+
+
+
+// Welcome Modal Styles
+.welcome-modal {
+  .welcome-modal-content {
+    --padding-start: 2rem;
+    --padding-end: 2rem;
+    --padding-top: 3rem;
+    --padding-bottom: 3rem;
+
+    .welcome-content {
+      text-align: center;
+      max-width: 300px;
+      margin: 0 auto;
+
+      .welcome-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        animation: successPulse 2s ease-in-out infinite;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 1rem;
+        color: var(--ion-color-medium);
+        line-height: 1.5;
+        margin-bottom: 2rem;
+      }
+
+      ion-button {
+        --border-radius: 12px;
+        --box-shadow: 0 6px 20px rgba(var(--ion-color-success-rgb), 0.3);
+        font-weight: 600;
+
+        &:hover {
+          --box-shadow: 0 8px 24px rgba(var(--ion-color-success-rgb), 0.4);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 50vh;
+    padding: 1.5rem 1rem;
+
+    .hero-emoji-container .hero-emoji {
+      font-size: 3rem;
+    }
+
+    .hero-title h1 {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle p {
+      font-size: 1rem;
+    }
+  }
+
+  .features-section {
+    padding: 2rem 1rem 3rem;
+
+.section-title h2 {
+  font-size: 1.75rem;
+  text-align: center;
+}
+  }
+
+.feature-card {
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  ion-card-content {
+    padding: 1.25rem;
+  }
+
+  .feature-content-wrapper {
+    gap: 0.75rem;
+  }
+
+  .feature-icon-container {
+    padding: 0.5rem;
+
+    .feature-icon {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    .hero-title h1 {
+      font-size: 1.75rem;
+    }
+
+    .hero-subtitle p {
+      font-size: 0.95rem;
+    }
+
+   
+  }
+
+  .feature-card {
+    .feature-content-wrapper {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+    }
+
+  }
+}

@@ -1,0 +1,366 @@
+ion-content {
+  --background: #f8f9fa;
+  --padding-top: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-bottom: 16px;
+}
+
+/* Header Styling */
+ion-header {
+  ion-toolbar {
+    --background: #000000;
+    --color: #ffffff;
+    
+    ion-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #ffc409;
+    }
+    
+    ion-button {
+      --color: #ffffff;
+    }
+  }
+}
+
+.booking-details {
+  max-width: 800px;
+  margin: 0 auto;
+
+  .booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 196, 9, 0.1);
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .status {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      &.booked, &.active {
+        background-color: #ffc409;
+        color: #000000;
+      }
+
+      &.completed {
+        background-color: #2dd36f;
+        color: #ffffff;
+      }
+
+      &.cancelled {
+        background-color: #eb445a;
+        color: #ffffff;
+      }
+
+      &.pending {
+        background-color: #ffc409;
+        color: #000000;
+      }
+
+      &.rejected {
+        background-color: #eb445a;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .booking-info {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 196, 9, 0.1);
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 12px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      lucide-icon {
+        font-size: 1.5rem;
+        color: #ffc409;
+        margin-right: 16px;
+        min-width: 24px;
+      }
+
+      div {
+        flex: 1;
+        
+        small {
+          display: block;
+          font-size: 0.8rem;
+          color: #6c757d;
+          margin-bottom: 4px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        
+        p {
+          margin: 0;
+          font-size: 1rem;
+          color: #000000;
+          font-weight: 600;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+
+  .clients-section {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 196, 9, 0.1);
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 196, 9, 0.2);
+
+      h2 {
+        margin: 0;
+        font-size: 1.3rem;
+        color: #000000;
+        font-weight: 700;
+      }
+
+      .spots-available {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+      }
+    }
+
+    ion-list {
+      background: transparent;
+      padding: 0;
+
+      ion-item {
+        --background: transparent;
+        --padding-start: 0;
+        --padding-end: 0;
+        --inner-padding-end: 0;
+        margin-bottom: 12px;
+        border-radius: 12px;
+        background: #f8f9fa;
+        padding: 12px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        ion-avatar {
+          width: 48px;
+          height: 48px;
+          margin-right: 16px;
+          --border-radius: 12px;
+          overflow: hidden;
+          background: #ffc409;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        
+        ion-label {
+          h3 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #000000;
+          }
+          
+          p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #6c757d;
+          }
+        }
+      }
+    }
+  }
+
+  .booking-actions {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 196, 9, 0.1);
+
+    ion-button {
+      --background: #ffc409;
+      --background-hover: #e0b000;
+      --background-activated: #e0b000;
+      --color: #000000;
+      --border-radius: 8px;
+      font-weight: 600;
+      text-transform: none;
+      margin-bottom: 12px;
+
+      &.medium {
+        --background: #6c757d;
+        --background-hover: #5a6268;
+        --color: #ffffff;
+      }
+
+      &.primary {
+        --background: #ffc409;
+        --background-hover: #e0b000;
+        --color: #000000;
+      }
+
+      &.warning {
+        --background: #ffc409;
+        --background-hover: #e0b000;
+        --color: #000000;
+      }
+    }
+
+    .pending-message,
+    .rejected-message,
+    .status-message {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+
+      lucide-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+    }
+
+    .pending-message {
+      background: rgba(255, 196, 9, 0.1);
+      border: 1px solid rgba(255, 196, 9, 0.3);
+      color: #856404;
+
+      lucide-icon {
+        color: #ffc409;
+      }
+    }
+
+    .rejected-message {
+      background: rgba(235, 68, 90, 0.1);
+      border: 1px solid rgba(235, 68, 90, 0.3);
+      color: #721c24;
+
+      lucide-icon {
+        color: #eb445a;
+      }
+    }
+
+    .status-message {
+      background: rgba(108, 117, 125, 0.1);
+      border: 1px solid rgba(108, 117, 125, 0.3);
+      color: #495057;
+
+      lucide-icon {
+        color: #6c757d;
+      }
+    }
+  }
+}
+
+/* Loading and Error States */
+.ion-text-center {
+  text-align: center;
+  padding: 40px 20px;
+
+  ion-spinner {
+    --color: #ffc409;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: #6c757d;
+    margin: 0 0 20px 0;
+    font-size: 1rem;
+  }
+
+  h3 {
+    color: #000000;
+    margin: 0 0 12px 0;
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+
+  ion-button {
+    --color: #000000;
+    --background: #ffc409;
+    --background-hover: #e0b000;
+    --border-radius: 8px;
+    font-weight: 600;
+    text-transform: none;
+  }
+
+  lucide-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .booking-details {
+    .booking-header {
+      padding: 16px;
+      
+      h1 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .booking-info {
+      padding: 16px;
+    }
+
+    .clients-section {
+      padding: 16px;
+    }
+
+    .booking-actions {
+      padding: 16px;
+    }
+  }
+}

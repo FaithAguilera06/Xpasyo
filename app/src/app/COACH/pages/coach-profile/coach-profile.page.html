@@ -1,0 +1,99 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Header Bar with Back Button -->
+  <div class="profile-header-bar">
+    <div class="simple-back" (click)="goBack()">
+      <lucide-icon name="arrow-left"></lucide-icon>
+      <span>Back</span>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="profile-role-indicator">
+      <lucide-icon name="user-check" class="role-icon coach"></lucide-icon>
+      <span class="role-label coach">Coach</span>
+    </div>
+  </div>
+  <!-- Header Section -->
+  <div class="profile-header-container">
+    <div class="profile-header-content">
+      <ion-avatar class="profile-avatar">
+        <img [src]="coachData.avatar || 'assets/images/default-avatar.png'" alt="Profile Picture" />
+      </ion-avatar>
+      <div class="profile-name-email">
+        <div class="profile-name">{{ coachData.name || 'No Name' }}</div>
+        <div class="profile-email">{{ coachData.email || 'No email provided' }}</div>
+      </div>
+      <div class="profile-header-actions">
+        <ion-button (click)="openSettings()" fill="clear" color="dark" class="settings-btn" *ngIf="false">
+          <lucide-icon name="settings" slot="start"></lucide-icon>
+          <span style="text-transform: none;">Settings</span>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading; else profileContent" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Loading profile...</p>
+  </div>
+
+  <ng-template #profileContent>
+    <div class="profile-body-container">
+      <!-- Account Info Section -->
+      <div class="section-label">Account Info</div>
+      <div class="account-info-container">
+        <div class="info-row">
+          <ion-label>Name</ion-label>
+          <span>{{ coachData.name || 'No Name' }}</span>
+        </div>
+        <div class="info-row">
+          <ion-label>Number</ion-label>
+          <span>{{ coachData.contactNumber || 'Not provided' }}</span>
+        </div>
+        <div class="info-row">
+          <ion-label>Gcash Number</ion-label>
+          <span>{{ coachData.gcashNumber || 'Not provided' }}</span>
+        </div>
+        <div class="info-row">
+          <ion-label>User ID</ion-label>
+          <span [title]="coachData.uid">
+            {{ coachData.uid.length > 16 ? (coachData.uid | slice:0:8) + '...' + (coachData.uid | slice:-4) : coachData.uid }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Location Settings Section -->
+      <div class="section-label">Location Settings</div>
+      <div class="location-settings-container">
+        <div class="setting-row">
+          <div class="setting-info">
+            <ion-label class="setting-label">Location Access</ion-label>
+            <span class="setting-description">Allow app to access your location for nearby gyms</span>
+          </div>
+          <ion-toggle 
+            [(ngModel)]="locationEnabled" 
+            (ionChange)="onLocationToggleChange($event)"
+            [disabled]="isLocationLoading">
+          </ion-toggle>
+        </div>
+        
+        <div class="setting-row" *ngIf="locationEnabled">
+          <div class="setting-info">
+            <ion-label class="setting-label">High Accuracy</ion-label>
+            <span class="setting-description">Use GPS for precise location (uses more battery)</span>
+          </div>
+          <ion-toggle 
+            [(ngModel)]="highAccuracyEnabled" 
+            (ionChange)="onHighAccuracyToggleChange($event)"
+            [disabled]="isLocationLoading">
+          </ion-toggle>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <ion-button (click)="logout()" fill="solid" color="danger" class="logout-button" expand="block" shape="round">
+        <lucide-icon slot="start" name="log-out"></lucide-icon>
+        <span>Logout</span>
+      </ion-button>
+    </div>
+  </ng-template>
+</ion-content>

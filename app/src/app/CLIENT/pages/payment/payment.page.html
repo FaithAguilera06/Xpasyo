@@ -1,0 +1,93 @@
+
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="payment-container">
+    <!-- Unified Info Card: Class Info + Venue Fee + GCash + Total -->
+    <ion-card class="info-card">
+      <ion-card-content>
+        <div class="info-card-header-row">
+          <ion-button fill="clear" size="small" class="back-btn" (click)="goBack()" aria-label="Go back">
+            <lucide-icon slot="icon-only" name="arrow-left"></lucide-icon>
+          </ion-button>
+          <span class="info-card-title">Class Payment Details</span>
+        </div>
+        <!-- 1. Class Title -->
+        <div class="class-title-row">
+          <span class="class-title">Class {{ paymentDetails.className }}</span>
+          <span class="venue-fee-inline">₱{{ (((paymentDetails.venueFee || 0) + (paymentDetails.coachFee || 0)) / maxStudents) | number:'1.2-2' }}</span>
+        </div>
+        <!-- 2. Coach Name -->
+        <div class="class-details">
+          <div><lucide-icon name="user"></lucide-icon> Coach: {{ paymentDetails.coachName }}</div>
+          <div><lucide-icon name="clock"></lucide-icon> Time: {{ paymentDetails.time }}</div>
+          <div><lucide-icon name="map-pin"></lucide-icon> Venue: {{ paymentDetails.location }}</div>
+        </div>
+        <div class="section-divider"></div>
+        <!-- 3. GCash Account -->
+        <div class="section-label">Coach's GCash Account</div>
+        <div class="gcash-info">
+          <div class="gcash-row">
+            <span class="gcash-label">Account Name:</span>
+            <span class="gcash-value">{{ paymentDetails.coachName }}</span>
+            <span class="gcash-sep">|</span>
+            <span class="gcash-number">{{ paymentDetails.gcashNumber }}</span>
+            <ion-button fill="clear" size="small" class="copy-btn" (click)="copyGcashNumber(paymentDetails.gcashNumber || '')" aria-label="Copy account number">
+              <lucide-icon name="copy"></lucide-icon>
+            </ion-button>
+          </div>
+          <div class="gcash-note">Class fee varies on the venue fee + coach fee / maximum capacity of the class</div>
+        </div>
+        <div class="total-row">
+          <span class="total-label">Total Amount to Pay:</span>
+          <span class="total-amount">₱{{ (((paymentDetails.venueFee || 0) + (paymentDetails.coachFee || 0)) / maxStudents) | number:'1.2-2' }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Proof of Payment and Submit Button Container -->
+    <div class="proof-submit-container">
+      <ion-card class="proof-card">
+        <ion-card-header>
+          <div class="proof-header-row">
+            <ion-card-title>PROOF OF PAYMENT</ion-card-title>
+            <ion-button
+              (click)="submitPayment()"
+              [disabled]="!receiptImage || isSubmitting"
+              class="submit-btn"
+              fill="clear"
+            >
+              <ion-spinner name="crescent" *ngIf="isSubmitting"></ion-spinner>
+              <span *ngIf="!isSubmitting">SUBMIT</span>
+            </ion-button>
+          </div>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="proof-instructions">
+            <p>Please upload a screenshot of your payment receipt.</p>
+          </div>
+          <!-- Improved Upload Area -->
+          <div class="upload-cta-row" (click)="selectFile()">
+            <lucide-icon name="paperclip"></lucide-icon>
+            <span>Upload Payment Proof</span>
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              style="display: none"
+            />
+          </div>
+          <div class="accepted-formats-note">Accepted formats: JPG, PNG — Max 5MB</div>
+
+          <div class="file-preview" *ngIf="receiptImage">
+            <lucide-icon name="file"></lucide-icon>
+            <span>{{ receiptFileName }}</span>
+            <ion-button fill="clear" (click)="removeFile()">
+              <lucide-icon name="x" slot="icon-only"></lucide-icon>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

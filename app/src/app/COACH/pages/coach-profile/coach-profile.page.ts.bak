@@ -1,0 +1,403 @@
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
+import { 
+  ActionSheetController, 
+  AlertController, 
+  IonButton, 
+  IonButtons, 
+  IonCard, 
+  IonCardContent, 
+  IonCardHeader, 
+  IonCardTitle, 
+  IonContent, 
+  IonHeader, 
+  IonIcon, 
+  IonImg, 
+  IonInput, 
+  IonItem, 
+  IonLabel, 
+  IonSpinner, 
+  IonTextarea, 
+  IonTitle, 
+  IonToolbar,
+  LoadingController, 
+  NavController,
+  Platform, 
+  ToastController 
+} from '@ionic/angular/standalone';
+import { Auth, signOut, updateProfile } from '@angular/fire/auth';
+import { Firestore, collection, doc, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL, FirebaseStorage } from 'firebase/storage';
+import { initializeApp } from 'firebase/app';
+import { environment } from 'src/environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+declare var Vibrant: any; // For color extraction
+
+interface CoachProfile {
+  uid: string;
+  email: string;
+  name: string;
+  contactNumber: string;
+  bio?: string;
+  photoURL?: string;
+  specialization?: string;
+  experience?: string;
+  rating?: number;
+}
+
+@Component({
+  selector: 'app-coach-profile',
+  templateUrl: './coach-profile.page.html',
+  styleUrls: ['./coach-profile.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule, 
+    FormsModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonTextarea,
+    IonButton,
+    IonButtons,
+    IonIcon,
+    IonImg,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonSpinner
+  ],
+})
+export class CoachProfilePage implements OnInit {
+  coachId: string = '';
+  coachData: CoachProfile = {
+    uid: '',
+    email: '',
+    name: '',
+    contactNumber: '',
+    bio: '',
+    photoURL: '',
+    specialization: '',
+    experience: '',
+    rating: 0
+  };
+  isLoading: boolean = true;
+  isEditing: boolean = false;
+  originalData: Partial<CoachProfile> = {};
+  private storage: FirebaseStorage = getStorage();
+
+  // Inject services in constructor instead of using inject() to avoid issues
+  constructor(
+    private actionSheetCtrl: ActionSheetController,
+    private alertController: AlertController,
+    private auth: Auth,
+    private elementRef: ElementRef,
+    private firestore: Firestore,
+    private loadingCtrl: LoadingController,
+    private platform: Platform,
+    private renderer: Renderer2,
+    public route: ActivatedRoute,
+    private router: Router,
+    private sanitizer: DomSanitizer,
+    private toastCtrl: ToastController
+  ) {
+    // Load Vibrant.js for color extraction
+    this.loadVibrantJs();
+  }
+  
+
+
+  // Load Vibrant.js dynamically
+  private loadVibrantJs() {
+    if (this.platform.is('hybrid')) {
+      // For mobile, we'll use a simpler color extraction
+      return;
+    }
+    
+    const script = this.renderer.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/node-vibrant@3.2.1-alpha/dist/vibrant.min.js';
+    script.onload = () => {
+      console.log('Vibrant.js loaded');
+    };
+    this.renderer.appendChild(document.head, script);
+  }
+
+  // Extract dominant color from image
+  private extractDominantColor(imageUrl: string): Promise<string> {
+    return new Promise((resolve) => {
+      // Type assertion for window with Vibrant
+      const win = window as any;
+      
+      if (!win.Vibrant) {
+        // Fallback to primary color if Vibrant.js is not available
+        resolve(getComputedStyle(document.documentElement).getPropertyValue('--ion-color-primary'));
+        return;
+      }
+
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.src = imageUrl;
+      
+      img.onload = () => {
+        try {
+          const vibrant = new win.Vibrant(img);
+          const swatches = vibrant.swatches();
+          
+          // Get the most vibrant color or fall back to primary color
+          const color = swatches.Vibrant?.getHex() || 
+                       swatches.Muted?.getHex() || 
+                       swatches.DarkVibrant?.getHex() ||
+                       getComputedStyle(document.documentElement).getPropertyValue('--ion-color-primary');
+          
+          resolve(color);
+        } catch (error) {
+          console.error('Error extracting color:', error);
+          resolve(getComputedStyle(document.documentElement).getPropertyValue('--ion-color-primary'));
+        }
+      };
+      
+      img.onerror = () => {
+        resolve(getComputedStyle(document.documentElement).getPropertyValue('--ion-color-primary'));
+      };
+    });
+  }
+
+  // Apply dynamic theme colors
+  private async applyDynamicTheme(imageUrl: string) {
+    if (!imageUrl) return;
+    
+    try {
+      const dominantColor = await this.extractDominantColor(imageUrl);
+      
+      // Apply the color to the root element
+      const root = document.documentElement;
+      root.style.setProperty('--dynamic-primary', dominantColor);
+      
+      // Add the dynamic-theme class to the app
+      document.body.classList.add('dynamic-theme');
+      
+      // Log the color for debugging
+      console.log('Applied dynamic color:', dominantColor);
+    } catch (error) {
+      console.error('Error applying dynamic theme:', error);
+    }
+  }
+
+  async ngOnInit() {
+    try {
+      this.route.params.subscribe(async (params: any) => {
+        this.coachId = params['id'] || this.auth.currentUser?.uid;
+        if (!this.coachId) {
+          this.router.navigate(['/login']);
+          return;
+        }
+        await this.loadCoachData();
+      });
+    } catch (error) {
+      console.error('Error in ngOnInit:', error);
+      this.showError('Failed to initialize profile page');
+    }
+  }
+
+  async loadCoachData() {
+    console.log('Loading coach data for professionalId:', this.coachId);
+    
+    const loading = await this.loadingCtrl.create({
+      message: 'Loading profile...',
+    });
+    
+    try {
+      await loading.present();
+      
+      // Query the coaches collection where uid matches the URL parameter
+      const coachesRef = collection(this.firestore, 'coaches');
+      const q = query(coachesRef, where('uid', '==', this.coachId));
+      
+      console.log('Executing query for uid:', this.coachId);
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        console.error('No coach found with professionalId:', this.coachId);
+        // Log all available documents for debugging
+        const allCoaches = await getDocs(collection(this.firestore, 'coaches'));
+        console.log('Available coaches:', allCoaches.docs.map(doc => ({
+          id: doc.id,
+          data: doc.data()
+        })));
+        throw new Error('Coach profile not found in Firestore');
+      }
+      
+      const coachDoc = querySnapshot.docs[0];
+      console.log('Found coach document with ID:', coachDoc.id);
+      console.log('Document data:', coachDoc.data());
+
+      const coachData = coachDoc.data() as CoachProfile;
+      
+      // Map the data to our interface
+      this.coachData = {
+        uid: this.coachId,
+        email: coachData['email'] || '',
+        name: coachData['name'] || 'No Name',
+        contactNumber: coachData['contactNumber'] || 'Not provided',
+        bio: coachData['bio'] || '',
+        photoURL: coachData['photoURL'] || '',
+        specialization: coachData['specialization'],
+        experience: coachData['experience'],
+        rating: coachData['rating']
+      };
+      
+      // Save a copy of the original data for canceling edits
+      this.originalData = { ...this.coachData };
+      
+      console.log('Mapped coach data:', this.coachData);
+      
+      // Apply dynamic theme based on profile picture
+      if (this.coachData.photoURL) {
+        this.applyDynamicTheme(this.coachData.photoURL);
+      }
+      
+      this.isLoading = false;
+      
+    } catch (error: any) {
+      console.error('Error in loadCoachData:', error);
+      this.showError(error.message || 'Failed to load coach profile');
+    } finally {
+      if (loading) {
+        await loading.dismiss();
+      }
+    }
+  }
+
+  private async showError(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  // Toggle edit mode
+  startEditing() {
+    this.originalData = { ...this.coachData };
+    this.isEditing = true;
+  }
+
+  // Cancel editing and revert changes
+  cancelEditing() {
+    if (this.originalData) {
+  async removeProfilePicture() {
+    try {
+      this.coachData.photoURL = '';
+      await this.saveProfile();
+    } catch (error) {
+      console.error('Error removing profile picture:', error);
+      this.showError('Failed to remove profile picture. Please try again.');
+    }
+  }
+
+  // Show profile picture change options
+  async showProfilePictureOptions() {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Update Profile Picture',
+      buttons: [
+        {
+          text: 'Take Photo',
+          icon: 'camera',
+          handler: () => {
+            this.takePhoto();
+          }
+        },
+        {
+          text: 'Choose from Gallery',
+          icon: 'image',
+          handler: () => {
+            this.chooseFromGallery();
+          }
+        },
+        {
+          text: 'Remove Photo',
+          role: 'destructive',
+          icon: 'trash',
+          handler: () => {
+            this.coachData.photoURL = '';
+          }
+        },
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await actionSheet.present();
+  }
+
+  // Show confirmation dialog before logging out
+  async confirmLogout() {
+    const alert = await this.alertController.create({
+      header: 'Logout',
+      message: 'Are you sure you want to logout?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Logout',
+          handler: async () => {
+            await this.logout();
+          }
+        }
+      ]
+    });
+    
+    await alert.present();
+  }
+
+  // Logout user
+  async logout() {
+    const confirm = await this.alertController.create({
+      header: 'Confirm Logout',
+      message: 'Are you sure you want to logout?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Logout',
+          handler: async () => {
+            const loading = await this.loadingCtrl.create({
+              message: 'Logging out...',
+            });
+            
+            try {
+              await loading.present();
+              await signOut(this.auth);
+              this.router.navigate(['/login']);
+            } catch (error) {
+              console.error('Error logging out:', error);
+              this.showError('Failed to logout. Please try again.');
+            } finally {
+              if (loading) {
+                await loading.dismiss();
+              }
+            }
+          }
+        }
+      ]
+    });
+
+    await confirm.present();
+  }
+}

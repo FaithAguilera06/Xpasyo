@@ -1,0 +1,532 @@
+/* Reset default styles */
+ion-content {
+  --background: #f8f9fa;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+/* Map Markers & Popups */
+.gym-marker {
+  .gym-marker-inner {
+    background: var(--ion-color-primary);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    .gym-name {
+      font-weight: 600;
+    }
+
+    .distance {
+      font-size: 10px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+  }
+}
+
+.maplibregl-popup-content {
+  padding: 12px;
+  border-radius: 8px;
+
+  .gym-popup {
+    h3 {
+      margin: 0 0 8px 0;
+      color: var(--ion-color-primary);
+      font-size: 16px;
+    }
+
+    p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #666;
+
+      &.distance {
+        color: var(--ion-color-primary);
+        font-weight: 500;
+      }
+    }
+
+    .view-gym-btn {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      margin-top: 8px;
+      background: var(--ion-color-primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+
+      &:hover {
+        background: var(--ion-color-primary-shade);
+      }
+    }
+  }
+}
+
+/* Gym Logo */
+.gym-logo {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--ion-color-primary);
+  background-color: #fff;
+  padding: 2px;
+}
+
+ion-avatar {
+  --border-radius: 50%;
+  overflow: hidden;
+  width: 48px;
+  height: 48px;
+  margin-right: 12px;
+}
+
+/* Map Container */
+.map-container {
+  position: relative;
+  height: 45vh;
+  min-height: 300px;
+  width: 100%;
+  overflow: hidden;
+  background: #f0f0f0;
+
+  .map {
+    width: 100%;
+    height: 100%;
+    background: #e9ecef;
+  }
+
+  .location-button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    z-index: 1000;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 20px;
+
+  ion-spinner {
+    margin-bottom: 16px;
+    --color: var(--ion-color-primary);
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+/* Error State */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 20px;
+
+  i-lucide {
+    color: var(--ion-color-danger);
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin-bottom: 20px;
+  }
+
+  ion-button {
+    --border-radius: 8px;
+  }
+}
+
+/* Gym List */
+ion-list {
+  background: transparent;
+  padding: 12px 16px;
+  margin: 0;
+
+  ion-list-header {
+    padding-left: 0;
+    margin-bottom: 8px;
+
+    ion-label {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  ion-item {
+    --border-radius: 12px;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    --inner-padding-end: 8px;
+    --background: white;
+    --border-color: rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    ion-avatar {
+      width: 60px;
+      height: 60px;
+      margin: 10px 12px 10px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--ion-color-light);
+
+      img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    ion-label {
+      margin: 12px 0;
+
+      h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: var(--ion-color-dark);
+      }
+
+      p {
+        font-size: 13px;
+        color: var(--ion-color-medium);
+        margin: 4px 0;
+        display: flex;
+        align-items: center;
+
+        i-lucide {
+          margin-right: 4px;
+          flex-shrink: 0;
+        }
+      }
+
+      .distance {
+        color: var(--ion-color-primary);
+        font-weight: 500;
+
+        i-lucide {
+          color: var(--ion-color-primary);
+        }
+      }
+    }
+  }
+}
+
+/* No Gyms Found */
+.no-gyms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  padding: 16px;
+
+  i-lucide {
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    margin: 0 0 20px;
+    max-width: 300px;
+  }
+}
+
+/* Header */
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: white;
+
+  ion-buttons {
+    ion-button {
+      --color: white;
+      --padding-start: 8px;
+      --padding-end: 8px;
+    }
+  }
+
+  ion-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .map-container {
+    height: 50vh;
+  }
+
+  ion-list {
+    padding: 16px 10%;
+
+    ion-item {
+      --padding-start: 16px;
+      --padding-end: 16px;
+
+      ion-avatar {
+        width: 80px;
+        height: 80px;
+      }
+
+      ion-label {
+        h2 {
+          font-size: 18px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+// Map Container
+.map-container {
+  position: relative;
+  height: 45vh;
+  min-height: 300px;
+  width: 100%;
+  overflow: hidden;
+
+  .map {
+    height: 100%;
+    width: 100%;
+    background: #e9ecef;
+  }
+
+  // Location Button
+  .location-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    --background: #007cff;
+    --background-activated: #0056b3;
+    --color: white;
+    --border-radius: 50%;
+    --box-shadow: 0 4px 16px rgba(0, 124, 255, 0.3);
+    width: 48px;
+    height: 48px;
+    margin: 0;
+
+    &:hover {
+      --box-shadow: 0 6px 20px rgba(0, 124, 255, 0.4);
+    }
+
+    &[disabled] {
+      --background: #6c757d;
+      --color: #adb5bd;
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    lucide-icon {
+      font-size: 20px;
+
+      &.spinning {
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+
+  // Price Pins (CSS positioned)
+  .price-pin {
+    position: absolute;
+    z-index: 1000;
+    pointer-events: auto;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .price-text {
+      display: inline-block;
+      background: #007cff;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 3px 12px rgba(0, 124, 255, 0.4);
+      border: 2px solid white;
+      white-space: nowrap;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #007cff;
+      }
+    }
+
+    // Individual pin styling
+    &.pin-1 .price-text {
+      background: #28a745;
+      box-shadow: 0 3px 12px rgba(40, 167, 69, 0.4);
+
+      &::after {
+        border-top-color: #28a745;
+      }
+    }
+
+    &.pin-2 .price-text {
+      background: #dc3545;
+      box-shadow: 0 3px 12px rgba(220, 53, 69, 0.4);
+
+      &::after {
+        border-top-color: #dc3545;
+      }
+    }
+
+    &.pin-3 .price-text {
+      background: #ffc107;
+      color: #212529;
+      box-shadow: 0 3px 12px rgba(255, 193, 7, 0.4);
+
+      &::after {
+        border-top-color: #ffc107;
+      }
+    }
+  }
+}
+
+// Custom map markers (MapLibre generated)
+.custom-marker {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+// User Location Marker
+.user-location-marker {
+  .location-pin {
+    position: relative;
+    width: 20px;
+    height: 20px;
+
+    .pin-inner {
+      width: 20px;
+      height: 20px;
+      background: #007cff;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0, 124, 255, 0.4);
+      position: relative;
+      z-index: 2;
+    }
+
+    .pin-ripple {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: rgba(0, 124, 255, 0.2);
+      border-radius: 50%;
+      animation: ripple 2s infinite;
+      z-index: 1;
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+// Listings Section
+.listings-section {
+  background: white;
+  border-radius: 20px 20px 0 0;
+  margin-top: -20px;
+  position: relative;
+  z-index: 100;
+  padding: 16px 16px 0;
+  height: 60vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}

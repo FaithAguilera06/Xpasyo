@@ -1,0 +1,4 @@
+<ion-app>
+  <app-custom-splash *ngIf="showSplash" [showSplash]="showSplash" [isOnline]="isOnline"></app-custom-splash>
+  <ion-router-outlet *ngIf="!showSplash"></ion-router-outlet>
+</ion-app>

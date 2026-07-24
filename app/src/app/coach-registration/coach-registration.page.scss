@@ -1,0 +1,330 @@
+:host {
+  --ion-background-color: #000000;
+  --ion-text-color: #ffffff;
+}
+
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+// Remove only Ionic's default form indicators (colored lines underneath)
+ion-input,
+ion-textarea,
+ion-select {
+  --highlight-color: transparent !important;
+  --highlight-color-focused: transparent !important;
+  --highlight-color-valid: transparent !important;
+  --highlight-color-invalid: transparent !important;
+}
+
+.registration-page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 5vh;
+}
+
+.welcome-container {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+
+  .welcome-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #a0aec0;
+    margin-top: 0.5rem;
+  }
+}
+
+.form-container {
+  padding: 0 1rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+
+  ion-label {
+    font-weight: 500;
+    color: #cbd5e0;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.5rem;
+
+    .required-asterisk {
+      color: var(--ion-color-warning, #f4bb00);
+      margin-left: 2px;
+    }
+  }
+
+  .input-wrapper {
+    background: #111827;
+    border-radius: 8px;
+    border: 1px solid #2d3748;
+    transition: border-color 0.2s ease-in-out;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    position: relative;
+
+    &.focused-input {
+      border-color: var(--ion-color-warning, #f4bb00);
+    }
+
+    .password-toggle-btn {
+      background: none;
+      border: none;
+      padding: 8px;
+      margin-right: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4a5568;
+      transition: color 0.2s ease-in-out;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 4px;
+
+      &:hover {
+        color: #a0aec0;
+        background: rgba(160, 174, 192, 0.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      .eye-icon {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2;
+      }
+    }
+  }
+
+  .custom-input {
+    --background: transparent;
+    --color: #ffffff;
+    --placeholder-color: #4a5568;
+    --placeholder-opacity: 1;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    flex: 1;
+    height: 100%;
+    background: transparent;
+    color: #ffffff;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    padding: 0 1rem;
+
+    &::placeholder {
+      color: #4a5568;
+      opacity: 1;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+// File upload styling
+.file-upload-wrapper {
+  margin-bottom: 0.5rem;
+}
+
+.file-upload-label {
+  display: block;
+  background: #111827;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  padding: 1rem;
+
+  &:hover {
+    border-color: var(--ion-color-warning, #f4bb00);
+  }
+}
+
+.file-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: var(--ion-color-warning, #f4bb00);
+  margin-bottom: 0.5rem;
+}
+
+.file-upload-text {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.file-upload-hint {
+  color: #4a5568;
+  font-size: 0.75rem;
+}
+
+.file-input {
+  display: none;
+}
+
+.error-message-field {
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-top: 0.25rem;
+  padding: 0;
+
+  span {
+    display: block;
+  }
+}
+
+.password-mismatch {
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.submit-button {
+  --background: var(--ion-color-warning, #f4bb00);
+  --color: #000000;
+  --border-radius: 8px;
+  --box-shadow: none;
+  height: 50px;
+  font-weight: 600;
+  text-transform: none;
+  font-size: 1rem;
+  margin-top: 1rem;
+  transition: all 0.3s ease-in-out;
+
+  &:disabled {
+    --background: #4a5568;
+    --color: #a0aec0;
+    opacity: 0.6;
+  }
+}
+
+.submit-spinner {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.success-message {
+  color: #10b981;
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 1rem 0;
+  font-weight: 500;
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #10b981;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 1rem 0;
+  font-weight: 500;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #ef4444;
+}
+
+.signin-container {
+  text-align: center;
+  margin-top: 2rem;
+
+  .signin-button {
+    --color: #a0aec0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: none;
+  }
+}
+
+.back-button-container {
+  padding: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.back-button {
+  --color: #a0aec0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: none;
+  --padding-start: 0;
+  --padding-end: 0;
+  height: auto;
+  margin: 0;
+
+  .back-icon {
+    margin-right: 0.5rem;
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .back-text {
+    display: none;
+    text-decoration: underline;
+  }
+
+  // Show text on larger screens (tablet and up)
+  @media (min-width: 768px) {
+    .back-text {
+      display: inline;
+    }
+  }
+}
+
+.registration-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 1rem 0.5rem 1rem;
+  background: transparent;
+  min-height: 3rem;
+}
+
+.zap-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--ion-color-warning, #f4bb00);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}

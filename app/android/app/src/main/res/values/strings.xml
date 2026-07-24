@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">XPASYO</string>
+    <string name="title_activity_main">XPASYO</string>
+    <string name="package_name">ionic.f5xpasyo</string>
+    <string name="custom_url_scheme">ionic.f5xpasyo</string>
+</resources>

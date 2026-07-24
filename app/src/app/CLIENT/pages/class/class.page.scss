@@ -1,0 +1,219 @@
+/* Styles for CL-CLASS tab */
+
+/* Class Page Styles */
+ion-content {
+  --background: #f8f9fa;
+  --padding-top: 16px;
+  --padding-bottom: 80px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+/* Header Styling */
+ion-header {
+  ion-toolbar {
+    --background: #000000;
+    --color: #ffffff;
+    
+    ion-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #ffc409;
+    }
+    
+    ion-button {
+      --color: #ffffff;
+    }
+  }
+}
+
+.session-card {
+  background: #ffffff;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 196, 9, 0.1);
+  transition: all 0.3s ease;
+  
+  &:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #000000;
+    }
+    
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      color: white;
+      
+      &.success {
+        background: #2dd36f;
+      }
+      
+      &.warning {
+        background: #ffc409;
+        color: #000000;
+      }
+      
+      &.danger {
+        background: #eb445a;
+      }
+      
+      &.medium {
+        background: #6c757d;
+      }
+    }
+  }
+  
+  .session-details {
+    margin: 16px 0;
+    
+    .detail-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      color: #333333;
+      font-size: 0.95rem;
+      
+      lucide-icon {
+        color: #ffc409;
+        margin-right: 12px;
+        font-size: 1.1rem;
+        min-width: 20px;
+        text-align: center;
+      }
+      
+      span, p {
+        margin: 0;
+        color: #333333;
+      }
+      
+      strong {
+        color: #000000;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .session-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 196, 9, 0.2);
+    margin-top: 16px;
+    
+    .fee {
+      font-weight: 700;
+      color: #ffc409;
+      font-size: 1.2rem;
+    }
+    
+    ion-button {
+      --color: #000000;
+      --background: #ffc409;
+      --background-hover: #e0b000;
+      --background-activated: #e0b000;
+      --border-radius: 8px;
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --padding-top: 8px;
+      --padding-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: none;
+      
+      &:hover {
+        --background: #e0b000;
+      }
+    }
+  }
+}
+
+/* Empty state */
+.no-sessions {
+  text-align: center;
+  padding: 60px 20px;
+  
+  lucide-icon {
+    font-size: 4rem;
+    color: #ffc409;
+    margin-bottom: 20px;
+  }
+  
+  h3 {
+    color: #000000;
+    margin: 0 0 12px;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  
+  p {
+    color: #666666;
+    margin: 0 0 24px;
+    font-size: 1rem;
+  }
+  
+  ion-button {
+    --color: #000000;
+    --background: #ffc409;
+    --background-hover: #e0b000;
+    --border-radius: 8px;
+    font-weight: 600;
+    text-transform: none;
+  }
+}
+
+/* Loading state */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  
+  ion-spinner {
+    --color: #ffc409;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: #666666;
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .session-card {
+    padding: 16px;
+    margin-bottom: 12px;
+    
+    .session-header h2 {
+      font-size: 1.2rem;
+    }
+    
+    .session-details .detail-row {
+      font-size: 0.9rem;
+    }
+  }
+}
+

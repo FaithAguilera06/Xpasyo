@@ -1,0 +1,32 @@
+<ion-content>
+  <div class="role-selection-container">
+    <main class="main-content">
+      <div class="header-wrapper">
+        <button class="back-button" (click)="goToLogin()">
+          <lucide-icon name="chevron-left" class="back-icon"></lucide-icon>
+          <span>Back to login</span>
+        </button>
+      </div>
+
+      <div class="title-section">
+        <h1 class="main-title">Choose your role</h1>
+        <p class="subtitle">Select how you want to use XPASYO</p>
+      </div>
+
+      <div class="flex md:flex-row flex-col justify-evenly gap-8 mt-10">
+        <button 
+          *ngFor="let feature of features" 
+          class="role-card" 
+          (click)="onRoleSelect(feature)"
+          [class.selected]="selectedRole === feature.title"
+        >
+          <div class="icon-container">
+            <lucide-icon [name]="feature.icon" class="role-icon"></lucide-icon>
+          </div>
+          <h2 class="card-title">{{ feature.title }}</h2>
+          <p class="card-description">{{ feature.description }}</p>
+        </button>
+      </div>
+    </main>
+  </div>
+</ion-content>

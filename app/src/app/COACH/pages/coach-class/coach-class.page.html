@@ -1,0 +1,334 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" *ngIf="!showClassList && selectedClass" (click)="goBack()">
+        <lucide-icon slot="icon-only" name="arrow-left"></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+    <div class="header-title">
+      <div class="class-title">{{ selectedClass?.className }}</div>
+    </div>
+    <div *ngIf="showClassList" class="scheduled-classes-header">
+      My Scheduled Classes
+    </div>
+    <ion-buttons slot="end">
+      <ion-button
+        *ngIf="selectedClass"
+        fill="clear"
+        (click)="manualRefresh()"
+        [disabled]="isRefreshing"
+      >
+        <lucide-icon 
+          name="refresh-cw" 
+          [class.spinning]="isRefreshing"
+          size="20"
+        ></lucide-icon>
+      </ion-button>
+      <ion-badge
+        *ngIf="selectedClass"
+        [color]="getClassStatusColor(selectedClass.status)"
+        class="status-badge header-status-badge"
+      >
+        {{ selectedClass.status | titlecase }}
+      </ion-badge>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading your classes...</p>
+  </div>
+
+  <!-- Refreshing State -->
+  <div *ngIf="isRefreshing && !isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Refreshing data...</p>
+  </div>
+
+  <!-- Class List -->
+  <div *ngIf="!isLoading && showClassList">
+    <ion-list>
+      <ion-list-header *ngIf="classes.length > 0">
+        <!-- moved to header -->
+      </ion-list-header>
+
+      <ion-item
+        *ngFor="let classItem of classes"
+        (click)="selectClass(classItem)"
+        button
+        detail
+      >
+        <ion-label>
+          <div class="class-list-title-row">
+            <span class="class-list-title">{{ classItem.className }}</span>
+            <ion-badge
+              [color]="classItem.status === 'active' ? 'success' : (classItem.status === 'pending' ? 'warning' : (classItem.status === 'closed' ? 'danger' : 'medium'))"
+              class="class-status-badge"
+            >
+              {{ classItem.status | titlecase }}
+            </ion-badge>
+          </div>
+          <div class="class-list-gym" [title]="classItem.gymName">{{ classItem.gymName }}</div>
+          <div class="class-list-details">
+            <lucide-icon name="calendar" aria-hidden="true"></lucide-icon>
+            <span>{{ formatDate(classItem.date) }}</span>
+            <lucide-icon name="clock" aria-hidden="true" style="margin-left:1em"></lucide-icon>
+            <span>{{ formatTime(classItem.time) }}</span>
+          </div>
+        </ion-label>
+      </ion-item>
+
+      <ion-item *ngIf="classes.length === 0 && !isLoading" lines="none">
+        <ion-label class="ion-text-center">
+          <p>You don't have any scheduled classes yet.</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Class Details -->
+  <div *ngIf="!showClassList && selectedClass">
+    <div class="class-detail-container">
+      <!-- Date & Time Card -->
+      <div class="info-card">
+        <div class="info-icon calendar"><lucide-icon name="calendar"></lucide-icon></div>
+        <div>
+          <div class="info-label">Date & Time</div>
+          <div class="info-main">{{ formatDate(selectedClass?.date || '') }}</div>
+          <div class="info-sub">{{ formatTime(selectedClass?.time || '') }}</div>
+        </div>
+      </div>
+
+      <!-- Fee Cards Row -->
+      <div class="fee-row">
+        <div class="info-card">
+          <div class="info-icon venue"><lucide-icon name="map-pin"></lucide-icon></div>
+          <div>
+            <div class="info-label">Venue Fee</div>
+            <div class="info-main">{{ formatCurrency(selectedClass.venueFee ?? 0) }}</div>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon coach"><lucide-icon name="credit-card"></lucide-icon></div>
+          <div>
+            <div class="info-label">Coach Fee</div>
+            <div class="info-main">{{ formatCurrency(selectedClass.coachFee ?? 0) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capacity Card -->
+      <div class="info-card">
+        <div class="info-icon capacity"><lucide-icon name="users"></lucide-icon></div>
+        <div>
+          <div class="info-label">Capacity</div>
+          <div class="info-main">
+            {{ selectedClass?.enrolledStudents?.length || 0 }} / {{ selectedClass?.maxStudents }} Students
+            <ion-badge color="danger" class="status-badge" *ngIf="(selectedClass?.enrolledStudents?.length || 0) === selectedClass?.maxStudents">Full</ion-badge>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unified Payment Action Card (always under capacity) -->
+      <ng-container *ngIf="shouldShowPaymentButton() || selectedClass?.paymentStatus">
+        <div *ngIf="!selectedClass?.paymentStatus || selectedClass?.paymentStatus === 'rejected'"
+             class="payment-card"
+             [ngClass]="{
+               'danger-bg': selectedClass?.paymentStatus === 'rejected',
+               'warning-bg': selectedClass?.paymentStatus === 'pending',
+               'success-bg': selectedClass?.paymentStatus === 'paid'
+             }">
+          <div class="payment-header">
+            <span class="payment-title">Submit Payment</span>
+            <span class="icon-circle" (click)="processPayment()" style="cursor:pointer;">
+              <lucide-icon name="credit-card" size="20"></lucide-icon>
+            </span>
+          </div>
+          <div class="description">
+            Complete your payment to proceed.
+          </div>
+        </div>
+        <div *ngIf="selectedClass?.paymentStatus && selectedClass?.paymentStatus !== 'rejected'" class="payment-status-card"
+             [ngClass]="{
+               'paid': selectedClass?.paymentStatus === 'paid',
+               'pending': selectedClass?.paymentStatus === 'pending',
+               'rejected': selectedClass?.paymentStatus === 'rejected'
+             }">
+          <div class="card-header">
+            <div class="icon-bg"
+                 [ngClass]="{
+                   'paid': selectedClass?.paymentStatus === 'paid',
+                   'pending': selectedClass?.paymentStatus === 'pending',
+                   'rejected': selectedClass?.paymentStatus === 'rejected'
+                 }">
+              <lucide-icon
+                [name]="selectedClass?.paymentStatus === 'paid' ? 'circle-check' : (selectedClass?.paymentStatus === 'pending' ? 'clock' : (selectedClass?.paymentStatus === 'rejected' ? 'x-circle' : 'credit-card'))">
+              </lucide-icon>
+            </div>
+            <div class="card-title-group">
+              <span class="card-title">
+                <ng-container [ngSwitch]="selectedClass?.paymentStatus">
+                  <span *ngSwitchCase="'pending'">Payment Pending</span>
+                  <span *ngSwitchCase="'rejected'">Payment Rejected</span>
+                  <span *ngSwitchCase="'paid'">Payment Approved</span>
+                  <span *ngSwitchDefault>Submit Payment</span>
+                </ng-container>
+              </span>
+              <ion-badge
+                [color]="selectedClass?.paymentStatus === 'paid' ? 'success' : (selectedClass?.paymentStatus === 'pending' ? 'warning' : (selectedClass?.paymentStatus === 'rejected' ? 'danger' : 'medium'))"
+                class="status-badge"
+                *ngIf="selectedClass?.paymentStatus"
+              >
+                {{ selectedClass?.paymentStatus === 'paid' ? 'Paid' : (selectedClass?.paymentStatus === 'pending' ? 'Pending' : (selectedClass?.paymentStatus === 'rejected' ? 'Rejected' : selectedClass?.paymentStatus | titlecase)) }}
+              </ion-badge>
+            </div>
+          </div>
+          <div class="card-message">
+            <ng-container [ngSwitch]="selectedClass?.paymentStatus">
+              <span *ngSwitchCase="'pending'">
+                Your payment has been submitted and is awaiting admin review.
+              </span>
+              <span *ngSwitchCase="'rejected'">Your payment was rejected. Please resubmit your payment.</span>
+              <span *ngSwitchCase="'paid'">Your payment has been approved. Thank you!</span>
+              <span *ngSwitchDefault>Complete your payment to proceed.</span>
+            </ng-container>
+          </div>
+          <ion-button
+            *ngIf="shouldShowPaymentButton()"
+            [color]="getPaymentButtonColor()"
+            (click)="processPayment()"
+            class="payment-action-button"
+            expand="block"
+          >
+            <lucide-icon [name]="getPaymentButtonIcon()" slot="start"></lucide-icon>
+            {{ getPaymentButtonText() }}
+          </ion-button>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Toggle Section -->
+    <div class="toggle-section">
+      <ion-segment [(ngModel)]="selectedTab" mode="ios" class="custom-segment">
+        <ion-segment-button value="details" class="segment-button">
+          <ion-label>Details</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="attendees" class="segment-button">
+          <ion-label>Attendees</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Details Tab Content -->
+    <div *ngIf="selectedTab === 'details'" class="tab-content">
+      <div class="details-section">
+        <div class="section-header">
+          <div class="header-content">
+            <h2>Class Management</h2>
+            <span class="section-subtitle">Control your class status and settings</span>
+          </div>
+        </div>
+
+        <div class="activate-button-container">
+          <ion-button
+            [color]="selectedClass?.status === 'active' ? 'danger' : 'primary'"
+            (click)="toggleClassStatus()"
+            [disabled]="isActivateButtonDisabled()"
+            class="activate-class-button"
+            expand="block"
+          >
+            <lucide-icon
+              [name]="selectedClass?.status === 'active' ? 'circle-x' : 'circle-check-big'"
+              slot="start"
+            >
+            </lucide-icon>
+            {{ selectedClass?.status === 'active' ? 'Close Class' : 'Activate Class' }}
+          </ion-button>
+          <div class="status-info">
+            <p class="status-description">
+              {{ selectedClass?.status === 'active' ? 
+                'Your class is currently active and accepting students.' : 
+                'Activate your class to start accepting student bookings.' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendees Tab Content -->
+    <div *ngIf="selectedTab === 'attendees'" class="tab-content">
+      <div class="attendees-section">
+        <div class="section-header">
+          <div class="header-content">
+            <h2>Attendees</h2>
+          </div>
+        </div>
+
+        <ion-list class="attendees-list">
+          <ion-item
+            *ngFor="let student of selectedClass?.enrolledStudents || []"
+            class="attendee-item"
+            lines="none"
+          >
+            <ion-avatar slot="start" class="attendee-avatar">
+              <img [src]="'https://ui-avatars.com/api/?name=' + (student.name || 'User') + '&background=random'" [alt]="student.name || 'User'" />
+            </ion-avatar>
+            <ion-label class="ion-text-wrap">
+              <div class="attendee-main">
+                <div class="attendee-header">
+                  <span class="student-name">{{ student.name || 'No Name' }}</span>
+                  <ion-badge
+                    [color]="
+                      student.status === 'paid' || student.status === 'Paid' || student.status === 'approved' ? 'success' :
+                      student.status === 'pending' ? 'warning' :
+                      student.status === 'Rejected' ? 'danger' :
+                      student.status === 'booked' ? 'medium' : 'medium'
+                    "
+                    *ngIf="student.status === 'booked' || student.status === 'approved' || student.status === 'paid' || student.status === 'Paid' || student.status === 'pending' || student.status === 'Rejected'"
+                    class="status-badge"
+                  >
+                    {{
+                      student.status === 'paid' || student.status === 'Paid' || student.status === 'approved' ? 'Paid' :
+                      student.status === 'pending' ? 'Pending' :
+                      student.status === 'Rejected' ? 'Rejected' :
+                      student.status === 'booked' ? 'Booked' : student.status
+                    }}
+                  </ion-badge>
+                </div>
+                <div class="student-email">{{ student.email || 'No email' }}</div>
+                <div class="student-date">{{ formatDate(student.bookedAt || '') }}</div>
+              </div>
+            </ion-label>
+            <ion-button
+              *ngIf="canNotifyClients() && (student.status === 'pending' || student.status === 'booked')"
+              fill="clear"
+              class="remind-btn"
+              slot="end"
+              (click)="remindClient(student)"
+              type="button"
+            >
+              <lucide-icon name="bell-ring"></lucide-icon>
+            </ion-button>
+          </ion-item>
+          <ion-item
+            *ngIf="!selectedClass?.enrolledStudents || selectedClass?.enrolledStudents?.length === 0"
+            class="no-attendees"
+            lines="none"
+          >
+            <lucide-icon name="user" slot="start" class="empty-icon"></lucide-icon>
+            <ion-label>
+              <p>No attendees yet</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </div> </div>
+    <div class="bottom-spacer"></div>
+  </ion-content>

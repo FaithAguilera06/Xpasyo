@@ -1,0 +1,432 @@
+:host {
+  --ion-background-color: #000000;
+  --ion-text-color: #ffffff;
+}
+
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+// Remove only Ionic's default form indicators (colored lines underneath)
+ion-input,
+ion-textarea,
+ion-select {
+  --highlight-color: transparent !important;
+  --highlight-color-focused: transparent !important;
+  --highlight-color-valid: transparent !important;
+  --highlight-color-invalid: transparent !important;
+}
+
+.login-page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 5vh; /* Pushes the content up slightly from the absolute bottom */
+}
+
+.welcome-container {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+
+  .welcome-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #a0aec0; // light grey
+    margin-top: 0.5rem;
+  }
+}
+
+.form-container {
+  padding: 0 1rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+
+  ion-label {
+    font-weight: 500;
+    color: #cbd5e0;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .input-wrapper {
+    background: #111827;
+    border-radius: 8px;
+    border: 1px solid #2d3748;
+    transition: border-color 0.2s ease-in-out;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    position: relative;
+
+    &.focused-input {
+      border-color: var(--ion-color-warning, #f4bb00);
+    }
+
+    .password-toggle-btn {
+      background: none;
+      border: none;
+      padding: 8px;
+      margin-right: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4a5568;
+      transition: color 0.2s ease-in-out;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 4px;
+
+      &:hover {
+        color: #a0aec0;
+        background: rgba(160, 174, 192, 0.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      .eye-icon {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2;
+      }
+    }
+  }
+
+  .custom-input {
+    --background: transparent;
+    --color: #ffffff;
+    --placeholder-color: #4a5568;
+    --placeholder-opacity: 1;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    flex: 1;
+    height: 100%;
+    background: transparent;
+    color: #ffffff;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    padding: 0 1rem;
+
+    &::placeholder {
+      color: #4a5568;
+      opacity: 1;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  // Hide Ionic's default password visibility toggle
+  ion-input {
+    &::part(native) {
+      &::-webkit-credentials-auto-fill-button {
+        display: none !important;
+      }
+    }
+  }
+
+  // Alternative approach to hide password toggle
+  ion-input[type="password"] {
+    &::part(native) {
+      &::-webkit-credentials-auto-fill-button {
+        display: none !important;
+      }
+    }
+  }
+
+  // Additional CSS to hide any password toggle buttons
+  ion-input {
+    --show-password-toggle: false;
+    
+    &::part(native) {
+      &::-webkit-credentials-auto-fill-button {
+        display: none !important;
+      }
+    }
+  }
+
+  // Hide any password visibility toggles that might appear
+  .password-input {
+    &::part(native) {
+      &::-webkit-credentials-auto-fill-button {
+        display: none !important;
+      }
+    }
+  }
+
+  // More aggressive approach to hide password toggles
+  ion-input[type="password"] {
+    &::part(native) {
+      &::-webkit-credentials-auto-fill-button,
+      &::-webkit-credentials-auto-fill-button:hover,
+      &::-webkit-credentials-auto-fill-button:active {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        background: none !important;
+      }
+    }
+  }
+
+  // Hide any password toggle that might appear in the shadow DOM
+  ion-input {
+    &::part(native) {
+      &::-webkit-credentials-auto-fill-button {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        background: none !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+      }
+    }
+  }
+
+  // Additional selectors for different browsers
+  ion-input {
+    &::part(native) {
+      &::-webkit-credentials-auto-fill-button,
+      &::-moz-credentials-auto-fill-button,
+      &::-ms-credentials-auto-fill-button {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        background: none !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+      }
+    }
+  }
+}
+
+.signin-button {
+  --background: var(--ion-color-warning, #f4bb00);
+  --color: #000000;
+  --border-radius: 8px;
+  --box-shadow: none;
+  height: 50px;
+  font-weight: 600;
+  text-transform: none;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.forgot-password-container {
+  text-align: center;
+  margin-top: 1.5rem;
+
+  .forgot-password-button {
+    --color: #a0aec0; // gray text
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: none;
+  }
+}
+
+.divider-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+
+  .divider-line {
+    width: 70%;
+    height: 2px;
+    background: #4a5568;
+  }
+}
+
+.create-account-container {
+  text-align: center;
+
+  .create-account-button {
+    --color: var(--ion-color-warning, #f4bb00);
+    font-weight: 600;
+    text-transform: none;
+    font-size: 0.9rem;
+  }
+  }
+
+.login-wrapper {
+  display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100%;
+  width: 100%;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.login-container {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 10;
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 6px;
+  letter-spacing: 0px;
+}
+
+.app-subtitle {
+  font-size: 14px;
+  color: #666;
+  font-weight: 400;
+}
+
+.welcome-text {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.welcome-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  font-size: 16px;
+  background: #fff;
+}
+
+.cta-button {
+  font-size: 14px !important;
+  width: 100%;
+  max-width: 300px;
+  margin: 20px auto 0 auto;
+  display: block;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 15px;
+  }
+
+  .login-container {
+    padding: 30px 25px;
+    border-radius: 20px;
+  }
+
+  .app-title {
+    font-size: 24px;
+  }
+
+  .welcome-title {
+    font-size: 22px;
+  }
+
+  .form-input {
+    padding: 14px 18px;
+    font-size: 16px;
+  }
+
+  .cta-button {
+    font-size: 12px !important;
+    max-width: 100%;
+    margin: 20px 0 0 0;
+  }
+}
+
+/* Touch-friendly enhancements */
+@media (hover: none) and (pointer: coarse) {
+  .cta-button {
+    padding: 20px;
+  }
+}
+
+
+.footer-title {
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}

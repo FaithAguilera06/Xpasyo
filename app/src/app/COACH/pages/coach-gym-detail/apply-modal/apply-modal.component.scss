@@ -1,0 +1,216 @@
+/* Apply Modal Styles */
+:host {
+  --background: #f8f9fa;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --padding: 20px;
+}
+
+ion-header {
+  ion-toolbar {
+    --background: #3880ff;
+    --color: white;
+    --min-height: 56px;
+
+    ion-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 0 16px;
+    }
+
+    ion-buttons {
+      margin: 0;
+
+      ion-button {
+        --color: white;
+        --min-width: 44px;
+        --min-height: 44px;
+        margin: 0;
+
+        ion-icon {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+}
+
+ion-content {
+  --padding: 20px;
+  --background: #f8f9fa;
+
+  form {
+    .section-container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+
+      .section-title {
+        color: #2c3e50;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #3880ff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .footer-actions {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+    }
+
+    ion-item {
+      --background: transparent;
+      --border-radius: 8px;
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --inner-padding-end: 0;
+      margin-bottom: 16px;
+      border: 1px solid #e0e0e0;
+
+      ion-label {
+        color: #666;
+        font-weight: 500;
+      }
+
+      ion-input,
+      ion-select,
+      ion-datetime {
+        --padding-top: 12px;
+        --padding-bottom: 12px;
+        --color: #2c3e50;
+        width: 100%;
+      }
+
+      ion-note {
+        color: #2c3e50;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      &[readonly] {
+        --background: #f8f9fa;
+        --highlight-color-focused: transparent;
+        --highlight-color-valid: transparent;
+        --highlight-color-invalid: transparent;
+      }
+    }
+
+    .total-fee {
+      margin: 24px 0;
+      padding: 16px;
+      background: #f0f8ff;
+      border-radius: 8px;
+      text-align: center;
+
+      .label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 4px;
+      }
+
+      .amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #3880ff;
+      }
+    }
+
+    ion-text[name="tooltip"] {
+      color: #a0a0a0;
+      font-size: 0.875rem;
+      margin: 8px 0;
+      display: block;
+      text-align: center;
+      font-style: italic;
+      padding: 0 16px;
+      line-height: 1.4;
+    }
+
+    ion-button[type="submit"] {
+      --background: #3880ff;
+      --background-hover: #3880ff;
+      --background-focused: #3880ff;
+      --background-activated: #3880ff;
+      --color: white;
+      --border-radius: 12px;
+      height: 56px;
+      font-weight: 600;
+      margin-top: 8px;
+      text-transform: none;
+      letter-spacing: 0.5px;
+      --box-shadow: 0 4px 12px rgba(56, 128, 255, 0.3);
+
+      &:disabled {
+        --background: #c0c0c0;
+        --opacity: 1;
+      }
+    }
+
+    .required-field::after {
+      content: ' *';
+      color: #eb445a;
+    }
+  }
+}
+
+/* Modal Styling */
+ion-modal {
+  --width: 100%;
+  --max-width: 500px;
+  --height: auto;
+  --max-height: 90vh;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+  &::part(content) {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  ion-header {
+    ion-toolbar {
+      --background: #3880ff;
+      --color: white;
+
+      ion-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  ion-content {
+    --background: #f8f9fa;
+    --padding-bottom: 20px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  ion-content {
+    --padding: 12px;
+
+    form {
+      ion-item {
+        --padding-start: 12px;
+        --padding-end: 12px;
+        margin-bottom: 12px;
+      }
+
+      ion-button[type="submit"] {
+        margin-top: 16px;
+      }
+    }
+  }
+}

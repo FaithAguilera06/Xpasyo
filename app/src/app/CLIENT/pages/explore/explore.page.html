@@ -1,0 +1,155 @@
+<ion-header>
+  <ion-toolbar class="black-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/client/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>XPASYO</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshLocation()" [disabled]="isLoading">
+        <lucide-icon slot="icon-only" name="refresh-cw"></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <lucide-icon name="circle-alert" size="24"></lucide-icon>
+    <p>{{ error }}</p>
+    <ion-button (click)="getCurrentLocation()">Try Again</ion-button>
+  </div>
+
+  <!-- Map Container -->
+  <div class="map-container" #mapContainer>
+    <button
+      class="reload-map-btn"
+      (click)="reinitializeMap()"
+      aria-label="Reload Map"
+      *ngIf="mapLoadError || !isMapReady"
+    >
+      <lucide-icon name="refresh-cw"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Gym List and Label Container -->
+  <div class="gym-list-container" *ngIf="!selectedGym">
+    <div class="gym-list-header">
+      <h2>Nearby Gyms <span *ngIf="!isLoading && nearestGyms.length > 0" class="gym-count-badge">({{ nearestGyms.length }})</span></h2>
+    </div>
+
+      <!-- Distance Filter Indicator -->
+      <div *ngIf="distanceLimit !== null" class="distance-filter-indicator">
+        <ion-chip color="warning">
+          <lucide-icon name="map-pin" size="small"></lucide-icon>
+          <ion-label>Filtered to {{ distanceLimit }}km</ion-label>
+          <lucide-icon name="x" (click)="clearDistanceLimit()"></lucide-icon>
+        </ion-chip>
+      </div>
+
+      <div *ngIf="isLoading" class="gym-list-loading-area">
+        <ion-spinner name="dots"></ion-spinner>
+        <div class="finding-gyms-label">finding nearby gym</div>
+      </div>
+
+      <ion-list *ngIf="!isLoading && nearestGyms.length > 0">
+        <ion-item
+          *ngFor="let gym of nearestGyms"
+          (click)="selectedGym = gym"
+          button
+          detail
+        class="gym-card"
+        >
+        <ion-avatar slot="start" class="gym-avatar">
+          <img
+              [src]="getGymLogo(gym)"
+              [alt]="gym.gymInfo?.name || 'Gym'"
+            (ionError)="handleImageError($event, gym)"
+              class="gym-logo"
+          />
+          </ion-avatar>
+          <ion-label>
+          <div style="display: flex; align-items: center; margin-bottom: 2px;">
+            <ion-badge
+              *ngIf="getGymLocationBadge(gym) as badge"
+              [ngStyle]="{'background': badge.color, 'color': badge.textColor, 'margin-right': '8px'}"
+              class="location-badge"
+            >
+              {{ badge.text }}
+            </ion-badge>
+            <h2 style="margin: 0; font-size: 1.1rem; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              {{ gym.gymInfo?.name || 'Unnamed Gym' }}
+            </h2>
+            <div *ngIf="gym.distance !== undefined" class="distance-badge-container">
+              <div class="distance-value">{{ gym.distance | number:'1.1-1' }} km</div>
+              <div class="distance-label">Linear Distance</div>
+            </div>
+          </div>
+          <div class="gym-address-row">
+            <lucide-icon name="map-pin" size="24" style="margin-right: 4px;"></lucide-icon>
+            <span class="gym-address">{{ gym.gym_address || 'No address provided' | slice:0:60 }}<span *ngIf="(gym.gym_address || '').length > 60">...</span></span>
+          </div>
+          <ion-button
+            fill="clear"
+            size="small"
+            class="directions-btn"
+            (click)="$event.stopPropagation(); openDirections(gym)"
+            [attr.aria-label]="'Get directions to ' + (gym.gymInfo?.name || 'this gym')"
+          >
+            <lucide-icon name="navigation" slot="start"></lucide-icon>
+            Directions
+          </ion-button>
+        </ion-label>
+        </ion-item>
+      </ion-list>
+      <div class="nothing-follows-label" *ngIf="!isLoading && nearestGyms.length > 0">Nothing follows</div>
+      <div *ngIf="!isLoading && nearestGyms.length === 0 && !error && userLocation === null" class="no-gyms">
+        <lucide-icon name="map-pin" size="24"></lucide-icon>
+        <h3>Location access required</h3>
+        <p>Enable location access to see nearby gyms and their distance from you.</p>
+      </div>
+      <div *ngIf="!isLoading && nearestGyms.length === 0 && !error && userLocation" class="no-gyms">
+        <lucide-icon name="map-pin" size="24"></lucide-icon>
+      <h3>No gyms found nearby.</h3>
+      <p>Try enabling location access or check back later for new gyms in your area.</p>
+      </div>
+  </div>
+
+  <!-- Focused Gym Details Card (no modal) -->
+  <div *ngIf="selectedGym" class="focused-gym-details-card" [class.closing]="isClosingCard">
+    <button class="close-details-btn clear-icon-btn" (click)="closeGymCard()" aria-label="Close details">
+      <lucide-icon name="x"></lucide-icon>
+    </button>
+    <div class="details-content">
+      <div class="small-map-container" #smallMapContainer>
+        <div class="map-overlay" *ngIf="selectedGym">
+          <lucide-icon name="map-pin"> </lucide-icon>
+
+          <div class="gym-name">{{ selectedGym.gymInfo?.name || selectedGym.name || 'Gym' }}</div>
+          <div class="distance" *ngIf="selectedGym.distance !== undefined">
+            {{ selectedGym.distance | number:'1.1-1' }} km
+          </div>
+        </div>
+      </div>
+      <ion-button expand="block" fill="clear" class="view-button custom-view-button" (click)="viewGymDetails(selectedGym.id)">Proceed to Gym</ion-button>
+    </div>
+  </div>
+
+  <!-- Location Modal Overlay -->
+  <div *ngIf="showLocationModal" class="location-modal-overlay">
+    <div class="location-modal-content">
+      <lucide-icon name="map-pin" size="24"></lucide-icon>
+      <h2>Please Enable your location first</h2>
+      <p>To see nearby gyms and use the map, please enable your device location.</p>
+      <ion-button expand="block" (click)="goToProfile()">
+        Go to Profile to Enable Location
+      </ion-button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="explore-loading-overlay">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p *ngIf="isFetchingLocation">Finding your location…</p>
+    <p *ngIf="!isFetchingLocation">Finding gyms near you…</p>
+  </div>
+</ion-content>

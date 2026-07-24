@@ -1,0 +1,335 @@
+:host {
+  --background: #000;
+  --primary: #fff;
+  --secondary: #f5f5f5;
+  --accent: #000;
+  --text: #000;
+  --muted: #666;
+  --success: #10b981;
+  --disabled: #d1d5db;
+}
+
+.session-details-bg {
+  background: #fff !important;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 16px 16px 16px;
+  padding-bottom: 88px;
+  overflow-y: auto;
+}
+
+.session-details-card {
+  background: #fff !important;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+  max-width: 448px;
+  width: 100%;
+  padding: 24px;
+  margin-bottom: 24px;
+  animation: fadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 60vh;
+  justify-content: center;
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.session-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+.decorative-line {
+  width: 48px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.book-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  background: #ffc409;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+.book-btn:hover:not(.disabled):not(.loading):not(.success) {
+  background: #374151;
+  transform: scale(1.05);
+}
+.book-btn:active {
+  transform: scale(0.95);
+}
+.book-btn.disabled,
+.book-btn[disabled] {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+.book-btn.loading {
+  background: #374151;
+  color: #fff;
+}
+.book-btn.success {
+  background: var(--success);
+  color: #fff;
+  transform: scale(1.1);
+}
+.book-btn .spin {
+  animation: spin 1s linear infinite;
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.coach-details-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 16px;
+}
+.coach-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.details-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.icon-bg {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+.coach-details-card .icon-bg {
+  background: #ffc409;
+  color: #000;
+}
+.coach-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+.coach-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+.class-info {
+  margin-left: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.class-info-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+.class-info-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+.details-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 0 0 8px 0;
+  margin: 16px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: none;
+}
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 0 16px;
+  font-size: 16px;
+  border-bottom: 1px solid #ececec;
+  background: transparent;
+}
+.detail-row:last-child {
+  border-bottom: none;
+}
+.price-row {
+  background: transparent;
+  color: inherit;
+  border-radius: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+}
+.price-row .icon-label {
+  color: inherit;
+}
+.price-row .detail-value.price {
+  color: inherit;
+  font-weight: 600;
+}
+.icon-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6b7280;
+}
+.detail-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+.details-grid, .detail-card, .price-card { display: none !important; }
+
+.terms-section {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  margin-top: 32px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.terms-header {
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+.terms-header:hover {
+  background: #f9fafb;
+}
+.terms-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.terms-content.open {
+  max-height: 384px;
+  opacity: 1;
+  overflow-y: auto;
+}
+.terms-box {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0 16px 16px 16px;
+}
+.terms-box ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0 0 0 18px;
+  font-size: 14px;
+  color: #374151;
+}
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  margin: 0 16px 16px 16px;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+.terms-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+
+.nav-back {
+  text-align: center;
+  width: 100%;
+}
+.nav-back-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+.back-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0 8px 0 0;
+}
+.back-btn:hover {
+  color: #000;
+}
+
+.justified-terms {
+  text-align: justify;
+}
+
+@media (max-width: 768px) {
+  .session-details-bg {
+    padding: 12px 0 88px 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  .session-details-card {
+    max-width: 100%;
+    padding: 20px;
+    min-height: calc(100vh - 12px - 88px);
+  }
+  .terms-content.open {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  .terms-box {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+} 
+ 

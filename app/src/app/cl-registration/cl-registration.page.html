@@ -1,0 +1,175 @@
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="registration-header">
+    <lucide-icon name="zap" class="zap-icon" (click)="goToLogin()"></lucide-icon>
+  </div>
+  <div class="registration-page-container">
+    <div class="content-wrapper">
+      <div class="welcome-container">
+        <h1 class="welcome-title">Create Account</h1>
+        <p class="welcome-subtitle">Join XPASYO as a client</p>
+      </div>
+
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="form-container">
+        <div class="input-group">
+          <ion-label>Full Name <span class="required-asterisk">*</span></ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('fullName')">
+            <ion-input 
+              formControlName="fullName" 
+              type="text" 
+              class="custom-input"
+              placeholder="Enter your full name" 
+              required
+              (ionFocus)="onFieldFocus('fullName')"
+              (ionBlur)="onFieldBlur()"
+            ></ion-input>
+          </div>
+          <div *ngIf="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched" class="error-message-field">
+            <span *ngIf="registrationForm.get('fullName')?.errors?.['minlength']">Full Name must be at least 2 characters</span>
+            <span *ngIf="registrationForm.get('fullName')?.errors?.['maxlength']">Full Name must be less than 100 characters</span>
+            <span *ngIf="registrationForm.get('fullName')?.errors?.['pattern']">Full Name can only contain letters, spaces, hyphens, and apostrophes</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <ion-label>Contact Number <span class="required-asterisk">*</span></ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('contactNumber')">
+            <ion-input 
+              formControlName="contactNumber" 
+              type="tel" 
+              class="custom-input"
+              placeholder="Enter your contact number" 
+              required
+              maxlength="11"
+              (ionInput)="enforceMaxLength($event, 11)"
+              (ionFocus)="onFieldFocus('contactNumber')"
+              (ionBlur)="onFieldBlur()"
+            ></ion-input>
+          </div>
+          <div *ngIf="registrationForm.get('contactNumber')?.invalid && registrationForm.get('contactNumber')?.touched" class="error-message-field">
+            <span *ngIf="registrationForm.get('contactNumber')?.errors?.['pattern']">Contact Number must be in format: 09XXXXXXXXX</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <ion-label>Gcash Number <span class="required-asterisk">*</span></ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('gcashNumber')">
+            <ion-input 
+              formControlName="gcashNumber" 
+              type="tel" 
+              class="custom-input"
+              placeholder="Enter your Gcash number" 
+              required
+              maxlength="11"
+              (ionInput)="enforceMaxLength($event, 11)"
+              (ionFocus)="onFieldFocus('gcashNumber')"
+              (ionBlur)="onFieldBlur()"
+            ></ion-input>
+          </div>
+          <div *ngIf="registrationForm.get('gcashNumber')?.invalid && registrationForm.get('gcashNumber')?.touched" class="error-message-field">
+            <span *ngIf="registrationForm.get('gcashNumber')?.errors?.['pattern']">Gcash Number must be in format: 09XXXXXXXXX</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <ion-label>Email Address <span class="required-asterisk">*</span></ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('email')">
+            <ion-input 
+              formControlName="email" 
+              type="email" 
+              class="custom-input"
+              placeholder="Enter your email" 
+              required
+              (ionFocus)="onFieldFocus('email')"
+              (ionBlur)="onFieldBlur()"
+            ></ion-input>
+          </div>
+          <div *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched" class="error-message-field">
+            <span *ngIf="registrationForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
+            <span *ngIf="registrationForm.get('email')?.errors?.['emailTaken']">This email is already registered</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <ion-label>Password <span class="required-asterisk">*</span></ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('password')">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="custom-input password-input"
+              placeholder="Enter your password"
+              formControlName="password"
+              required
+              autocomplete="new-password"
+              (focus)="onFieldFocus('password')"
+              (blur)="onFieldBlur()"
+            />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              (click)="toggleShowPassword()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              <lucide-icon
+                [name]="showPassword ? 'eye-off' : 'eye'"
+                class="eye-icon"
+              ></lucide-icon>
+            </button>
+          </div>
+          <div *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched" class="error-message-field">
+            <span *ngIf="registrationForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters</span>
+            <span *ngIf="registrationForm.get('password')?.errors?.['pattern']">Password must contain uppercase, lowercase, number, and special character</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <ion-label>Confirm Password <span class="required-asterisk">*</span></ion-label>
+          <div class="input-wrapper" [class.focused-input]="isFieldFocused('confirmPassword')">
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              class="custom-input password-input"
+              placeholder="Confirm your password"
+              formControlName="confirmPassword"
+              required
+              autocomplete="new-password"
+              (focus)="onFieldFocus('confirmPassword')"
+              (blur)="onFieldBlur()"
+            />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              (click)="toggleShowConfirmPassword()"
+              [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+            >
+              <lucide-icon
+                [name]="showConfirmPassword ? 'eye-off' : 'eye'"
+                class="eye-icon"
+              ></lucide-icon>
+            </button>
+          </div>
+          <div *ngIf="registrationForm.get('confirmPassword')?.invalid && registrationForm.get('confirmPassword')?.touched" class="error-message-field">
+            <span *ngIf="registrationForm.get('confirmPassword')?.errors?.['required']">Please confirm your password</span>
+          </div>
+        </div>
+
+        <div *ngIf="registrationForm.errors?.['passwordMismatch'] && registrationForm.get('confirmPassword')?.touched" class="error-message-field password-mismatch">
+          <span>Passwords do not match</span>
+        </div>
+
+        <ion-button 
+          type="submit" 
+          class="submit-button" 
+          expand="block"
+          [disabled]="!registrationForm.valid"
+        >
+          Create Account
+        </ion-button>
+
+        <div *ngIf="successMessage" class="success-message">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

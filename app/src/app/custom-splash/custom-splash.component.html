@@ -1,0 +1,10 @@
+<div class="splash-bg" *ngIf="showSplash" [class.fade-out]="!showSplash">
+  <!-- Background image will be set via CSS -->
+  <img src="assets/logo.svg" class="logo" [class.logo-animate]="!isOnline" />
+  <div *ngIf="!isOnline" class="offline-message">
+    No internet connection. Please connect to WiFi or mobile data.
+  </div>
+  <div *ngIf="showOnlineMessage" class="online-message">
+    You're back online!
+  </div>
+</div>

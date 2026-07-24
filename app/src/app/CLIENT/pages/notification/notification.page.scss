@@ -1,0 +1,552 @@
+ion-content {
+  --background: var(--ion-color-light);
+}
+
+.notification-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+
+  .no-notifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    text-align: center;
+    color: var(--ion-color-medium);
+
+    ion-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.1em;
+    }
+  }
+
+  ion-button[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .notification-card {
+    margin-bottom: 16px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: visible;
+    cursor: pointer;
+    min-height: 80px; // Ensure minimum touch target height
+
+    &.unread {
+      border-left: 6px solid var(--ion-color-primary);
+    }
+
+    &.clickable {
+      // Mobile-friendly touch feedback
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        background: rgba(var(--ion-color-primary-rgb), 0.02);
+      }
+
+      // Desktop hover effects (only apply on devices that support hover)
+      @media (hover: hover) {
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        &:hover::after {
+          opacity: 1;
+          color: var(--ion-color-primary);
+        }
+      }
+
+      &::after {
+        content: '→';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ion-color-medium);
+        font-size: 1.4em; // Larger for mobile
+        font-weight: bold;
+        opacity: 0.7;
+        transition: all 0.2s ease;
+        pointer-events: none; // Prevent interference with touch
+      }
+    }
+
+    // Mobile touch feedback
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .notification-content {
+    padding: 20px; // More padding for mobile
+    padding-right: 60px; // Space for arrow indicator
+  }
+
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .notification-type {
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+
+    &.payment, &.payment-update {
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+      color: var(--ion-color-primary);
+    }
+
+    &.booking {
+      background: rgba(var(--ion-color-success-rgb), 0.1);
+      color: var(--ion-color-success);
+    }
+
+    &.system {
+      background: rgba(var(--ion-color-medium-rgb), 0.1);
+      color: var(--ion-color-medium);
+    }
+  }
+
+  .notification-time {
+    display: flex;
+    align-items: center;
+    font-size: 0.8em;
+    color: var(--ion-color-medium);
+
+    .delete-button {
+      background: transparent;
+      border: none;
+      color: var(--ion-color-medium);
+      font-size: 24px; // Larger for mobile
+      font-weight: bold;
+      width: 44px; // Minimum touch target size (44px)
+      height: 44px; // Minimum touch target size (44px)
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 0;
+      margin-left: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1;
+      min-width: 44px; // Ensure minimum touch target
+      min-height: 44px; // Ensure minimum touch target
+      
+      // Mobile touch feedback
+      &:active {
+        transform: scale(0.9);
+        background: rgba(var(--ion-color-danger-rgb), 0.1);
+        color: var(--ion-color-danger);
+      }
+      
+      // Desktop hover effects
+      @media (hover: hover) {
+        &:hover {
+          color: var(--ion-color-danger);
+          background: rgba(var(--ion-color-danger-rgb), 0.1);
+        }
+      }
+    }
+  }
+
+  .notification-body {
+    .notification-title {
+      margin: 6px 0 8px; // More spacing for mobile
+      font-size: 1.2em; // Larger for mobile readability
+      font-weight: 600;
+      color: var(--ion-text-color);
+      line-height: 1.3;
+    }
+
+    .notification-message {
+      margin: 0 0 12px; // More spacing
+      font-size: 1em; // Larger for mobile
+      color: var(--ion-text-color);
+      opacity: 0.9;
+      line-height: 1.5; // Better line height for mobile
+      padding-right: 0; // Remove right padding since we have space for arrow
+    }
+
+    .notification-date {
+      font-size: 0.85em; // Slightly larger
+      color: var(--ion-color-medium);
+      margin-top: 4px;
+    }
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 500;
+
+    ion-icon {
+      margin-right: 4px;
+      font-size: 1.1em;
+    }
+
+    &.approved {
+      background: rgba(var(--ion-color-success-rgb), 0.1);
+      color: var(--ion-color-success);
+    }
+
+    &.rejected {
+      background: rgba(var(--ion-color-danger-rgb), 0.1);
+      color: var(--ion-color-danger);
+    }
+  }
+
+  .delete-all-container {
+    text-align: right;
+    margin-bottom: 16px;
+
+    ion-button {
+      --padding-start: 12px;
+      --padding-end: 12px;
+      --padding-top: 8px;
+      --padding-bottom: 8px;
+      font-size: 0.9em;
+      --color: var(--ion-color-medium);
+
+      ion-icon {
+        margin-right: 4px;
+      }
+
+      &:hover {
+        --color: var(--ion-color-danger);
+      }
+
+      &[disabled] {
+        --color: var(--ion-color-medium-shade);
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+// Dark mode styles
+@media (prefers-color-scheme: dark) {
+  .notification-card {
+    background: var(--ion-color-step-100);
+
+    &.unread {
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+    }
+  }
+  
+  .notification-title {
+    color: var(--ion-text-color);
+  }
+  
+  .notification-message {
+    color: var(--ion-color-step-600);
+  }
+}
+
+ion-header {
+  ion-toolbar {
+    --background: #fff;
+    ion-title {
+      font-weight: bold;
+      font-size: 1.25rem;
+      color: #000;
+    }
+  }
+}
+
+// Mobile-specific alert styles
+.mobile-alert {
+  --min-width: 300px;
+  --max-width: 90vw;
+  --border-radius: 16px;
+  
+  .alert-wrapper {
+    border-radius: 16px;
+  }
+  
+  .alert-head {
+    padding: 20px 20px 10px;
+    
+    .alert-title {
+      font-size: 1.3em;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+  }
+  
+  .alert-message {
+    padding: 10px 20px 20px;
+    font-size: 1em;
+    line-height: 1.5;
+  }
+  
+  .alert-button-group {
+    .alert-button {
+      min-height: 50px; // Minimum touch target
+      font-size: 1.1em;
+      font-weight: 500;
+      margin: 0;
+      border-radius: 0;
+      
+      &.alert-button-cancel {
+        color: var(--ion-color-medium);
+        border-top: 1px solid var(--ion-color-light-shade);
+      }
+      
+      &.alert-button-confirm {
+        color: var(--ion-color-primary);
+        font-weight: 600;
+        border-top: 1px solid var(--ion-color-light-shade);
+      }
+      
+      &:active {
+        background: rgba(var(--ion-color-primary-rgb), 0.1);
+      }
+    }
+  }
+  
+  // Payment reminder specific styles
+  &.payment-reminder-alert {
+    --min-width: 350px;
+    --max-width: 95vw;
+    
+    .alert-message {
+      white-space: pre-line; // Preserve line breaks
+      text-align: left;
+      font-size: 1.05em;
+      line-height: 1.6;
+      
+      // Style the venue text
+      strong {
+        color: var(--ion-color-primary);
+        font-weight: 600;
+      }
+      
+      // Style the fee
+      em {
+        font-style: normal;
+        font-weight: 600;
+        color: var(--ion-color-success);
+      }
+    }
+  }
+  
+  // Signature alert styles
+  &.signature-alert {
+    --min-width: 280px;
+    
+    .alert-message {
+      white-space: pre-line;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+      color: var(--ion-color-medium);
+      line-height: 1.4;
+    }
+  }
+}
+
+// Mobile responsive adjustments
+@media (max-width: 768px) {
+  .notification-container {
+    padding: 12px;
+    
+    .notification-card {
+      margin-bottom: 12px;
+      
+      .notification-content {
+        padding: 16px;
+        padding-right: 50px;
+      }
+      
+      .notification-body {
+        .notification-title {
+          font-size: 1.1em;
+        }
+        
+        .notification-message {
+          font-size: 0.95em;
+        }
+      }
+    }
+  }
+}
+
+.image-preview-overlay {
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  animation: fadeIn 0.2s;
+
+  img {
+    max-width: 95vw;
+    max-height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    background: #fff;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10000;
+    line-height: 1;
+    padding: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.payment-proof-thumb {
+  max-width: 100px;
+  max-height: 60px;
+  border-radius: 6px;
+  margin: 8px 0;
+  object-fit: cover;
+}
+
+.view-full-btn {
+  display: block;
+  margin: 0 auto 8px auto;
+  padding: 4px 12px;
+  font-size: 0.95em;
+  border-radius: 6px;
+  background: var(--ion-color-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+// Expand/collapse indicator
+.expand-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: var(--ion-color-medium);
+  font-size: 1.2em;
+  &.open {
+    color: var(--ion-color-primary);
+    transform: rotate(180deg);
+  }
+}
+
+// Expandable details section
+.notification-details {
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  font-size: 0.97em;
+  color: var(--ion-text-color);
+  .payment-proof-section {
+    margin-bottom: 10px;
+    img.payment-proof-thumb {
+      max-width: 120px;
+      border-radius: 8px;
+      margin-right: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .view-full-btn {
+      margin-top: 6px;
+      font-size: 0.95em;
+      color: var(--ion-color-primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+  }
+  strong {
+    color: var(--ion-color-primary);
+    margin-right: 4px;
+  }
+}
+
+// Notification Header Actions (copied from coach notification page)
+.notification-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+  
+  .header-info {
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    p {
+      margin: 4px 0 0 0;
+      font-size: 14px;
+      color: #666;
+    }
+  }
+  
+  .header-actions {
+    .bulk-delete-btn {
+      --color: #dc3545;
+      --background: transparent;
+      --background-hover: rgba(220, 53, 69, 0.1);
+      --border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      
+      lucide-icon {
+        font-size: 1em;
+        margin-right: 4px;
+      }
+    }
+  }
+}

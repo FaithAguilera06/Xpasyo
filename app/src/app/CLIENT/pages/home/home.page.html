@@ -1,0 +1,168 @@
+<ion-header [translucent]="true">
+  <ion-toolbar [style.opacity]="headerOpacity" class="black-header">
+    <ion-title (click)="reloadPage()">XPASYO</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToSearchPage()" class="header-icon-button">
+        <lucide-icon name="search"></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  [fullscreen]="true"
+  (ionScroll)="onContentScroll($event)"
+  scrollEvents="true"
+>
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading gyms...</p>
+  </div>
+
+  <!-- Gym List -->
+  <div class="gym-list" *ngIf="!isLoading">
+    <!-- No Gyms Found -->
+    <div class="empty-state" *ngIf="filteredGyms.length === 0 && suggestedGyms.length === 0 && !isLoading">
+      <h3>No Gyms Found</h3>
+      <ion-button (click)="loadGyms()" fill="clear">
+        <lucide-icon slot="start" name="refresh-cw"></lucide-icon>
+        Try Again
+      </ion-button>
+    </div>
+
+    <!-- Suggested Gyms Label -->
+    <div class="suggested-label" *ngIf="filteredGyms.length === 0 && suggestedGyms.length > 0">
+      <h3>SUGGESTED GYMS</h3>
+    </div>
+
+    <!-- Separator Line -->
+    <div class="section-separator" *ngIf="filteredGyms.length === 0 && suggestedGyms.length > 0"></div>
+
+    <!-- Suggested Gyms Section -->
+    <div class="suggested-section" *ngIf="filteredGyms.length === 0 && suggestedGyms.length > 0">
+      <div class="suggested-gym-list">
+        <ion-card
+          *ngFor="let gym of suggestedGyms"
+          (click)="viewGymDetails(gym.id)"
+          class="gym-card suggested"
+        >
+          <img
+            [src]="gym.gym_logo?.data || 'assets/images/default-gym.png'"
+            [alt]="'Logo of ' + gym.gymInfo.name"
+            [title]="gym.gymInfo.name"
+            (error)="handleImageError($event, gym)"
+          />
+          <ion-card-header>
+            <div class="header-content">
+              <ion-card-title>{{ gym.gymInfo.name }}</ion-card-title>
+              <div
+                class="price-display"
+                *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0"
+              >
+                {{ gym.gymInfo.classTypes[0].price_display || 'Price on request' }}
+              </div>
+            </div>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="gym-details">
+              <div class="detail" *ngIf="gym.gymInfo.district">
+                <lucide-icon name="map-pin"></lucide-icon>
+                <span>{{ gym.gymInfo.district }}</span>
+              </div>
+              <div class="detail" *ngIf="gym.gymInfo.fitnessType || gym.gymInfo.size">
+                <lucide-icon name="users"></lucide-icon>
+                <span>
+                  {{ gym.gymInfo.fitnessType }}<span *ngIf="gym.gymInfo.fitnessType && gym.gymInfo.size">, </span>{{ gym.gymInfo.size }}
+                </span>
+              </div>
+              <div class="class-types" *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0">
+                <div class="available-classes-label">Available classes:</div>
+                <div class="class-types-row">
+                  <div class="class-type" *ngFor="let classType of gym.gymInfo.classTypes">
+                    <span>{{ classType.name }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="detail" *ngIf="!gym.gymInfo.classTypes || gym.gymInfo.classTypes.length === 0">
+                <lucide-icon name="circle-alert"></lucide-icon>
+                <span>No class types available</span>
+              </div>
+            </div>
+            <div class="button-container">
+              <ion-button
+                expand="block"
+                fill="solid"
+                class="view-button custom-view-button"
+                (click)="viewGymDetails(gym.id)"
+              >
+                View Details
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+
+    <!-- Gym Cards (Exact Matches) -->
+    <ion-card
+      *ngFor="let gym of filteredGyms"
+      (click)="viewGymDetails(gym.id)"
+      class="gym-card"
+    >
+      <img
+        [src]="gym.gym_logo?.data || 'assets/images/default-gym.png'"
+        [alt]="'Logo of ' + gym.gymInfo.name"
+        [title]="gym.gymInfo.name"
+        (error)="handleImageError($event, gym)"
+      />
+      <ion-card-header>
+        <div class="header-content">
+          <ion-card-title>{{ gym.gymInfo.name }}</ion-card-title>
+          <div
+            class="price-display"
+            *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0"
+          >
+            {{ gym.gymInfo.classTypes[0].price_display || 'Price on request' }}
+          </div>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="gym-details">
+          <div class="detail" *ngIf="gym.gymInfo.district">
+            <lucide-icon name="map-pin"></lucide-icon>
+            <span>{{ gym.gymInfo.district }}</span>
+          </div>
+          <div class="detail" *ngIf="gym.gymInfo.fitnessType || gym.gymInfo.size">
+            <lucide-icon name="users"></lucide-icon>
+            <span>
+              {{ gym.gymInfo.fitnessType }}<span *ngIf="gym.gymInfo.fitnessType && gym.gymInfo.size">, </span>{{ gym.gymInfo.size }}
+            </span>
+          </div>
+          <div class="class-types" *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0">
+            <div class="available-classes-label">Available classes:</div>
+            <div class="class-types-row">
+              <div class="class-type" *ngFor="let classType of gym.gymInfo.classTypes">
+                <span>{{ classType.name }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="detail" *ngIf="!gym.gymInfo.classTypes || gym.gymInfo.classTypes.length === 0">
+            <lucide-icon name="circle-alert"></lucide-icon>
+            <span>No class types available</span>
+          </div>
+        </div>
+        <div class="button-container">
+          <ion-button
+            expand="block"
+            fill="solid"
+            class="view-button custom-view-button"
+            (click)="viewGymDetails(gym.id)"
+          >
+            View Details
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

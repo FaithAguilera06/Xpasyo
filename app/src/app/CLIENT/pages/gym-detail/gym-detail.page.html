@@ -1,0 +1,346 @@
+<ion-header>
+  <ion-toolbar style="--background: #000; --color: white">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <lucide-icon name="arrow-left"></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title
+      style="
+        color: #ffc409;
+        font-weight: 600;
+        text-align: center;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+      >{{ gym?.gymInfo?.name || 'GYM DETAILS' }}</ion-title
+    >
+    <ion-buttons slot="end">
+      <ion-button
+        *ngIf="gym"
+        fill="clear"
+        (click)="manualRefresh()"
+        [disabled]="isRefreshing"
+        style="--color: white"
+        aria-label="Refresh gym data"
+        title="Refresh data"
+      >
+        <lucide-icon
+          name="refresh-cw"
+          [class.spinning]="isRefreshing"
+          size="20"
+          aria-hidden="true"
+        ></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-refresher
+    slot="fixed"
+    (ionRefresh)="handleRefresh($event)"
+    pull-factor="0.5"
+    pull-min="80"
+    pull-max="160"
+  >
+    <ion-refresher-content
+      pulling-icon="chevron-down-circle-outline"
+      pulling-text="Pull to refresh"
+      refreshing-spinner="circles"
+      refreshing-text="Refreshing..."
+    ></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading gym details...</p>
+  </div>
+
+  <!-- Refreshing State -->
+  <div *ngIf="isRefreshing && !isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Refreshing data...</p>
+  </div>
+
+  <div *ngIf="!isLoading && gym" class="gym-content">
+    <!-- Gym Image -->
+    <div class="gym-image">
+      <img
+        [src]="gym.gymInfo.image || 'assets/images/default-gym.png'"
+        [alt]="gym.gymInfo.name"
+        (error)="onImageError($event)"
+      />
+    </div>
+
+    <!-- Gym Info -->
+    <div class="gym-info">
+      <!-- Gym Description -->
+      <div class="description-section" *ngIf="descriptionText">
+        <h2>About</h2>
+        <p class="gym-description">
+          {{ showFullDescription ? descriptionText : truncatedDescription }}
+          <button
+            *ngIf="hasLongDescription"
+            (click)="toggleDescription()"
+            class="see-more-btn"
+            ion-button
+            fill="clear"
+          >
+            {{ showFullDescription ? 'See less' : 'See more' }}
+          </button>
+        </p>
+      </div>
+
+      <!-- Map Section -->
+      <div class="map-section" style="margin: 16px 0">
+        <h2
+          style="
+            margin-bottom: 16px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #000;
+          "
+        >
+          Gym Details
+        </h2>
+
+        <div class="gym-details-list">
+          <div *ngIf="gym?.['gym_address']" class="detail-row">
+            <lucide-icon name="map-pin"></lucide-icon>
+            <strong>Address:</strong> <span>{{ gym['gym_address'] }}</span>
+          </div>
+          <div *ngIf="gym?.gymInfo?.businessHours" class="detail-row">
+            <lucide-icon name="clock"></lucide-icon>
+            <strong>Operating hours:</strong>
+            <span>{{ gym.gymInfo.businessHours }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="schedule-section">
+        <h2>Class Schedule</h2>
+        <div class="schedule-grid">
+          <!-- Show classes if they exist -->
+          <ng-container *ngIf="hasClasses()">
+            <div class="class-schedule-cards">
+              <ng-container *ngFor="let classItem of getScheduleArray()">
+                <div class="class-card">
+                  <!-- Get session once and reuse -->
+                  <ng-container
+                    *ngIf="getSessionForClass(classItem) as session; else noSession"
+                  >
+                    <!-- Top Section: Header Row -->
+                    <div class="card-header-row">
+                      <div class="header-left">
+                        <span class="class-day-badge"
+                          >{{ getAbbreviatedDay(classItem.day || '') }}</span
+                        >
+                        <span
+                          class="slots-badge"
+                          *ngIf="session.maxStudents !== undefined && session.currentAttendees !== undefined"
+                          [class.full-badge]="session.maxStudents - session.currentAttendees <= 0"
+                          [class.limited-badge]="session.maxStudents - session.currentAttendees === 1"
+                          [class.available-badge]="session.maxStudents - session.currentAttendees > 1"
+                        >
+                          {{ session.maxStudents - session.currentAttendees <= 0
+                          ? 'Full' : session.maxStudents -
+                          session.currentAttendees === 1 ? '1/' +
+                          session.maxStudents + ' slot left' :
+                          (session.maxStudents - session.currentAttendees) + '/'
+                          + session.maxStudents + ' slots left' }}
+                        </span>
+                      </div>
+                      <div
+                        class="class-price-header small-price"
+                        *ngIf="session['venueFee'] !== undefined && session['coachFee'] !== undefined && session.maxStudents > 0; else noPrice"
+                      >
+                        ₱{{ ((session['venueFee'] + session['coachFee']) /
+                        session.maxStudents) | number:'1.2-2' }}
+                      </div>
+                      <ng-template #noPrice></ng-template>
+                    </div>
+                    <div class="header-class-name">
+                      <h3 class="class-name">{{ classItem.className }}</h3>
+                    </div>
+
+                    <!-- Middle Section: Class Time -->
+                    <div class="card-middle-section">
+                      <div class="class-time">{{ classItem.time }}</div>
+                    </div>
+
+                    <!-- Bottom Section: Coach, Action Button -->
+                    <div class="card-bottom-section">
+                      <div class="class-coach" *ngIf="session.coachName">
+                        Coach: {{ session.coachName }}
+                      </div>
+                      <ion-button
+                        expand="block"
+                        class="book-now-btn"
+                        [class.pending-payment]="getSessionBookingStatusSync(session) === 'pending'"
+                        [disabled]="getSessionBookingStatusSync(session) !== 'available'"
+                        [routerLink]="['/client/gym-detail', gym.id, 'session', session.id]"
+                      >
+                        JOIN
+                      </ion-button>
+                    </div>
+                  </ng-container>
+
+                  <!-- No session template -->
+                  <ng-template #noSession>
+                    <!-- Top Section: Header Row -->
+                    <div class="card-header-row">
+                      <div class="header-left">
+                        <span class="class-day-badge"
+                          >{{ getAbbreviatedDay(classItem.day || '') }}</span
+                        >
+                      </div>
+                    </div>
+                    <div class="header-class-name">
+                      <h3 class="class-name">{{ classItem.className }}</h3>
+                    </div>
+
+                    <!-- Middle Section: Class Time -->
+                    <div class="card-middle-section">
+                      <div class="class-time">{{ classItem.time }}</div>
+                    </div>
+
+                    <!-- Bottom Section: Action Button -->
+                    <div class="card-bottom-section">
+                      <ion-button
+                        expand="block"
+                        class="book-now-btn"
+                        disabled
+                        (click)="bookNow()"
+                      >
+                        NO SESSION
+                      </ion-button>
+                    </div>
+                  </ng-template>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+
+          <!-- Show message if no schedule data -->
+          <div *ngIf="!gym?.gymInfo?.schedule" class="no-classes">
+            <p>No schedule information available</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Fixed Book Now Button -->
+<!--
+<ion-footer class="ion-no-border" *ngIf="!isLoading && gym">
+  <ion-toolbar>
+    <ion-button
+      expand="block"
+      (click)="bookNow()"
+      class="book-now-btn custom-view-button"
+    >
+      
+      Book now
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
+-->
+
+<!-- Booking Modal -->
+<ion-modal
+  [isOpen]="isBookingModalOpen"
+  (didDismiss)="closeBookingModal()"
+  [breakpoints]="[0, 1]"
+  [initialBreakpoint]="1"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeBookingModal()">
+            <lucide-icon name="arrow-left" slot="icon-only"></lucide-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Book a Session</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeBookingModal()">
+            <lucide-icon name="x"></lucide-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <!-- Loading State -->
+      <div *ngIf="isLoadingApplications" class="ion-text-center ion-padding">
+        <ion-spinner></ion-spinner>
+        <p>Loading available sessions...</p>
+      </div>
+
+      <!-- No Sessions Available -->
+      <div
+        *ngIf="!isLoadingApplications && coachApplications.length === 0"
+        class="ion-text-center ion-padding"
+      >
+        <lucide-icon name="calendar" size=""></lucide-icon>
+        <h3>No sessions available</h3>
+        <p>There are no available sessions at this time.</p>
+      </div>
+
+      <!-- Coach Applications List -->
+      <div *ngFor="let session of coachApplications" class="session-card">
+        <div class="session-header">
+          <h2>{{ session.className }}</h2>
+          <span class="fee">₱{{ session.fee }}</span>
+        </div>
+
+        <div class="session-details">
+          <div class="detail-row">
+            <lucide-icon name="user"></lucide-icon>
+            <span>Coach: {{ session.coachName }}</span>
+          </div>
+          <div class="detail-row">
+            <lucide-icon name="clock"></lucide-icon>
+            <span>{{ session.time }} on {{ session.day }}</span>
+          </div>
+          <div class="detail-row">
+            <lucide-icon name="users"></lucide-icon>
+            <span>Max Students: {{ session.maxStudents }}</span>
+          </div>
+        </div>
+
+        <ion-button
+          expand="block"
+          color="primary"
+          (click)="bookSpecificSession(session)"
+          [disabled]="getSessionBookingStatusSync(session) !== 'available'"
+          [class.pending-payment]="getSessionBookingStatusSync(session) === 'pending'"
+          class="book-button"
+        >
+          <lucide-icon name="calendar" slot="start"></lucide-icon>
+          {{ getSessionBookingStatusSync(session) === 'booked' ? 'Already
+          Booked' : getSessionBookingStatusSync(session) === 'pending' ?
+          'Payment Pending' : getSessionBookingStatusSync(session) === 'full' ?
+          'No Slots Available' : 'Book Now' }}
+          <ion-note
+            *ngIf="session.maxStudents && getSessionBookingStatusSync(session) === 'available'"
+            slot="end"
+            class="slot-count"
+          >
+            ({{ getActualAvailableSlots(session) }}/{{ session.maxStudents }}
+            slots left)
+          </ion-note>
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

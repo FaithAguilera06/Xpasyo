@@ -1,0 +1,124 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-title class="status-title">
+      <ion-text color="warning">
+        <strong>XPASYO</strong>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="landing-content">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="12" size-md="8" size-lg="6">
+          <div class="hero-content">
+            <!-- Animated Emoji -->
+            <div class="hero-emoji-container">
+              <img
+                src="assets/xpasyo.svg"
+                alt="XPASYO Logo"
+                class="hero-emoji"
+              />
+            </div>
+
+            <!-- Hero Title with Animated Text -->
+            <ion-text class="hero-title">
+              <h1>
+                <ion-text color="light">Ready to Get</ion-text>
+                <ion-text color="warning"> Fit?</ion-text>
+              </h1>
+            </ion-text>
+
+            <!-- Hero Subtitle -->
+            <ion-text class="hero-subtitle">
+              <p>
+                Transform your fitness journey with personalized workouts,
+                community support, and the best gyms around you.
+              </p>
+            </ion-text>
+
+            <!-- CTA Button with Ripple Effect -->
+            <ion-button
+              expand="block"
+              routerLink="/role-selection"
+              size="large"
+              color="warning"
+              shape="round"
+              class="cta-button"
+              [disabled]="isLoading"
+            >
+              <ion-text>
+                <strong>JOIN NOW</strong>
+              </ion-text>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="12" size-md="10" size-lg="8">
+          <!-- Section Title -->
+          <ion-text class="section-title">
+            <h2>What You'll Love</h2>
+          </ion-text>
+
+          <!-- Feature Cards -->
+          <div class="features-container">
+            <ion-card *ngFor="let feature of features" class="feature-card">
+              <ion-card-content>
+                <div class="feature-content-wrapper">
+                  <!-- Feature Icon -->
+                  <div class="feature-icon-container">
+                    <lucide-icon
+                      [name]="feature.icon"
+                      class="feature-icon"
+                      [color]="feature.color"
+                    >
+                    </lucide-icon>
+                  </div>
+
+                  <!-- Feature Text Content -->
+                  <div class="feature-text">
+                    <ion-card-title>
+                      <ion-text>
+                        <h3>{{ feature.title }}</h3>
+                      </ion-text>
+                    </ion-card-title>
+
+                    <ion-text class="feature-description">
+                      <p>{{ feature.description }}</p>
+                    </ion-text>
+                  </div>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Loading Overlay -->
+  <ion-loading
+    [isOpen]="isLoading"
+    message="Getting you ready..."
+    [showBackdrop]="true"
+    [translucent]="true"
+    spinner="crescent"
+  >
+  </ion-loading>
+
+  <ion-footer class="transparent-footer">
+    <ion-toolbar>
+      <ion-title class="footer-title">© 2025 Your App</ion-title>
+    </ion-toolbar>
+  </ion-footer></ion-content
+>

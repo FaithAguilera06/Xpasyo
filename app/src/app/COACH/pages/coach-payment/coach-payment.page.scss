@@ -1,0 +1,743 @@
+/* Coach Payment Page Styles */
+ion-content {
+  --background: #f8f9fa;
+}
+
+.payment-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: env(safe-area-inset-bottom, 180px); // increased for tab safety
+}
+
+.info-card, .amount-card, .proof-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.info-card {
+  ion-card-content {
+    padding: 24px 18px;
+  }
+  .class-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: 0.7em;
+    color: #222;
+    text-align: left;
+  }
+  .class-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.7em;
+  }
+  .class-title {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #222;
+  }
+  .venue-fee-inline {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #FFC409;
+    margin-left: 1em;
+  }
+  .class-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    margin-bottom: 1em;
+    div {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 1em;
+      color: #555;
+      lucide-icon[name="clock"] { color: #f8b400; }
+      lucide-icon[name="map-pin"] { color: #2ecc40; }
+    }
+  }
+  .section-divider {
+    border-bottom: 1px solid #eee;
+    margin: 1em 0;
+  }
+  .section-label {
+    font-size: 1em;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 0.3em;
+  }
+  .gcash-info {
+    background: #f6f8fa;
+    border-radius: 10px;
+    padding: 1em;
+    margin-bottom: 1em;
+    .gcash-account-name {
+      font-size: 0.98em;
+      color: #444;
+      margin-bottom: 0.2em;
+    }
+    .gcash-number-row {
+      display: flex;
+      align-items: center;
+      font-size: 1.2em;
+      font-weight: 700;
+      background: #fffbe6;
+      border-radius: 8px;
+      padding: 0.5em 0.8em;
+      margin-bottom: 0.2em;
+      .gcash-number { flex: 1; }
+      .copy-btn { margin-left: 0.5em; }
+    }
+    .gcash-note {
+      font-size: 0.9em;
+      color: #888;
+      font-style: italic;
+      margin-top: 0.3em;
+    }
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e6f9e6;
+    border-radius: 8px;
+    padding: 0.7em 1em;
+    .total-label { font-size: 1.1em; font-weight: 600; color: #222; }
+    .total-amount { font-size: 1.3em; font-weight: 800; color: #FFC409; }
+  }
+}
+
+.amount-card {
+  ion-card-content {
+    padding: 20px;
+    
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      color: var(--ion-color-medium);
+      
+      &.total {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #e9ecef;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+}
+
+.proof-card {
+  ion-card-header {
+    padding: 16px 20px;
+   
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    ion-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #222;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+  }
+  ion-card-content {
+    padding: 20px 16px;
+    .proof-instructions {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #888;
+      font-size: 0.98em;
+      p { margin: 8px 0; }
+    }
+    .file-upload.upload-area {
+      border: 2px dashed #f8b400;
+      border-radius: 10px;
+      padding: 6px 0; // further reduced
+      text-align: center;
+      cursor: pointer;
+      background: #fffbe6;
+      margin-bottom: 1.2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      &:active { background: #fff9e3; }
+      lucide-icon {
+        font-size: 1.1em; // further reduced
+        color: #f8b400;
+        margin-bottom: 0.15em;
+      }
+      span {
+        font-size: 0.85em; // further reduced
+        color: #333;
+        font-weight: 500;
+      }
+    }
+    .file-preview {
+      display: flex;
+      align-items: center;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 16px;
+      lucide-icon {
+        font-size: 1.5rem;
+        color: #6c757d;
+        margin-right: 12px;
+      }
+      span {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.98em;
+        color: #555;
+      }
+      ion-button {
+        --padding-start: 8px;
+        --padding-end: 8px;
+        --padding-top: 0;
+        --padding-bottom: 0;
+        margin: 0;
+        height: auto;
+      }
+    }
+  }
+}
+
+.proof-submit-container {
+  margin-top: 28px;
+}
+
+.submit-button {
+  margin: 32px 0 120px 0; // extra bottom margin for tab safety
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  ion-button {
+    --border-radius: 8px;
+    --padding-top: 20px;
+    --padding-bottom: 20px;
+    font-weight: 600;
+    text-transform: none;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    &:active {
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transform: translateY(1px);
+    }
+    &[disabled] {
+      --opacity: 0.7;
+    }
+  }
+}
+
+// Owner's GCash Information Styles
+.owner-gcash-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  color: white;
+  
+  .gcash-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    
+    lucide-icon {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  .gcash-account-name {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    
+    span {
+      font-weight: 500;
+    }
+  }
+  
+  .gcash-number {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  .gcash-note {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    text-align: center;
+    font-style: italic;
+  }
+}
+
+// Existing GCash Info Styles (for fallback)
+.gcash-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.5em;
+  background: none !important;
+  padding: 0;
+  box-shadow: none;
+  .gcash-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 1.08em;
+    font-weight: 500;
+    color: #222;
+    .gcash-label { color: #888; }
+    .gcash-owner { color: #222; font-weight: 600; }
+    .gcash-sep { color: #bbb; }
+    .gcash-number { font-family: 'Roboto Mono', monospace; font-weight: 700; }
+    .copy-btn {
+      --background: transparent;
+      --box-shadow: none;
+      font-size: 1.1em;
+      color: #2ecc40;
+      margin-left: 0em;
+      margin-right: 0;
+      padding: 0;
+      &:hover, &:focus { color: #27ae60; }
+    }
+  }
+  .gcash-note {
+    font-size: 0.92em;
+    color: #aaa;
+    font-style: italic;
+    margin-top: 0.2em;
+    margin-left: 0.1em;
+  }
+}
+.total-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1.08em;
+  font-weight: 600;
+  color: #222;
+  margin-top: 0.7em;
+  .total-label { color: #888; }
+  .total-amount { color: #2ecc40; font-weight: 800; font-size: 1.15em; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  .payment-container {
+    padding: 8px;
+  }
+  .info-card, .proof-card {
+    margin-bottom: 16px;
+  }
+  .info-card ion-card-content, .proof-card ion-card-content {
+    padding: 14px 6px;
+  }
+  .class-title {
+    font-size: 1.1em;
+  }
+  .class-details div {
+    font-size: 0.97em;
+  }
+  .total-amount {
+    font-size: 1.05em;
+  }
+  .gcash-number-row {
+    padding: 0.4em 0.5em;
+    font-size: 1em;
+  }
+  .total-row {
+    padding: 0.5em 0.5em;
+    font-size: 1em;
+  }
+  .file-upload.upload-area {
+    padding: 18px 0;
+    font-size: 1em;
+  }
+  .submit-button {
+    margin: 20px 0 0 0;
+  }
+}
+
+.gcash-number {
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: #222 !important;
+  font-size: 1.08em !important;
+  font-weight: 700 !important;
+  font-family: 'Roboto Mono', monospace !important;
+  letter-spacing: 0.04em !important;
+  text-align: left !important;
+}
+
+.gcash-account-name {
+  text-align: center;
+  margin-bottom: 12px;
+  
+  span {
+    font-size: 1rem;
+    color: #ffffff;
+    font-weight: 600;
+    background-color: rgba(255, 196, 9, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 196, 9, 0.5);
+  }
+}
+
+.gcash-number-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.copy-btn {
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.venue-fee-card {
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-radius: 12px;
+  background: #fff;
+  .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    ion-icon { margin-right: 8px; color: #4f8cff; }
+  }
+  .venue-fee-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+  }
+}
+
+.payment-card {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    ion-icon { margin-right: 8px; color: #4f8cff; }
+  }
+}
+
+.total-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fffbe6;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  .total-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #222;
+    margin-right: 12px;
+  }
+  .total-amount {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #f8b400;
+  }
+  ion-icon {
+    font-size: 1.5rem;
+    color: #f8b400;
+    margin-right: 10px;
+  }
+}
+
+.gcash-note {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  text-align: left;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+/* Spacing between sections */
+.proof-card, .submit-button {
+  margin-top: 28px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  .venue-fee-card, .payment-card, .total-section {
+    margin-bottom: 16px;
+  }
+  .total-section {
+    padding: 12px 8px;
+  }
+}
+
+.terms-link {
+  text-align: center;
+  margin-top: 10px;
+  a {
+    color: #4f8cff;
+    font-size: 0.95rem;
+    text-decoration: underline;
+  }
+}
+
+.faq-card {
+  margin-top: 28px;
+  .faq-item {
+    margin-bottom: 16px;
+    strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1rem;
+      color: #222;
+    }
+    p {
+      font-size: 0.95rem;
+      color: #555;
+      margin: 0;
+    }
+  }
+  ion-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.support-card {
+  margin-top: 18px;
+  .support-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4f8cff;
+  }
+  .support-info {
+    font-size: 0.97rem;
+    color: #333;
+    div {
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    a {
+      color: #4f8cff;
+      text-decoration: underline;
+    }
+  }
+}
+
+.success-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 0;
+  h2 {
+    margin: 18px 0 8px 0;
+    font-size: 1.4rem;
+    color: #222;
+    font-weight: 700;
+  }
+  p {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 24px;
+  }
+}
+
+.popover-content {
+  font-size: 0.97rem;
+  color: #333;
+  padding: 12px 16px;
+  max-width: 220px;
+}
+
+.file-upload.upload-area {
+  padding: 6px 0;
+  min-height: 48px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  cursor: pointer;
+  padding: 0.7em 1.2em;
+  border-radius: 6px;
+  background: #f7f7f7;
+  font-size: 1.08em;
+  font-weight: 600;
+  color: #222;
+  transition: background 0.15s;
+  margin: 0.5em auto 0.2em auto;
+  width: fit-content;
+  box-shadow: none;
+  border: 2px dashed #e0e0e0;
+  &:hover, &:focus {
+    background: #ececec;
+    border-color: #90caf9;
+    outline: 2px solid #90caf9;
+  }
+  &.drag-over {
+    border-color: #42b883;
+    outline: 2px solid #42b883;
+    background: #f0fdf6;
+  }
+  lucide-icon {
+    font-size: 1.2em;
+    color: #888;
+    margin-right: 0.2em;
+  }
+  span {
+    font-size: 1.08em;
+    font-weight: 600;
+    color: #222;
+  }
+}
+
+.copy-btn lucide-icon,
+.class-details lucide-icon[name="clock"],
+.class-details lucide-icon[name="map-pin"] {
+  color: #222 !important;
+}
+
+.by-gym {
+  font-size: 0.95em;
+  color: #888;
+  font-weight: 400;
+  margin-left: 0.4em;
+}
+
+.info-card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.7em;
+  justify-content: space-between;
+}
+.info-card-title {
+  font-size: 1.5em;
+  font-weight: 900;
+  color: #222;
+  margin-left: 0.2em;
+  letter-spacing: 0.01em;
+  text-align: right;
+  flex: 1;
+}
+.back-btn {
+  --background: transparent;
+  --box-shadow: none;
+  padding: 0;
+  min-width: 32px;
+  min-height: 32px;
+  font-size: 1.2em;
+  color: #222;
+}
+
+.accepted-formats-note {
+  font-size: 0.93em;
+  color: #888;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+.submit-btn {
+  background: #000 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  width: auto !important;
+  min-width: 80px;
+  max-width: 160px;
+  font-size: 0.95em;
+  padding: 0.2em 1em;
+  border-radius: 8px;
+  align-self: center;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.submit-btn:disabled,
+ion-button.submit-btn[disabled] {
+  background: #888 !important;
+  color: #fff !important;
+  cursor: not-allowed !important;
+}
+
+.proof-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.class-title,
+.proof-header-row ion-card-title {
+  font-size: 1.25em;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: 0.01em;
+}

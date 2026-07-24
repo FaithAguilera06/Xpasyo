@@ -1,0 +1,112 @@
+<ion-header [translucent]="true">
+  <ion-toolbar [style.opacity]="headerOpacity" class="black-header">
+    <ion-title (click)="reloadPage()">XPASYO</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToSearchPage()" class="header-icon-button">
+        <lucide-icon name="search"></lucide-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  [fullscreen]="true"
+  (ionScroll)="onContentScroll($event)"
+  scrollEvents="true"
+>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Main Loader: Only show if isLoading and not refreshing -->
+  <div class="loading-container" *ngIf="isLoading && !isRefreshing">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading gyms...</p>
+  </div>
+
+  <!-- Gym List -->
+  <div class="gym-list" *ngIf="!isLoading">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="gymsToDisplay.length === 0 && !isLoading">
+      <h3>No Gyms Found</h3>
+      <p>There are no gyms available at the moment.</p>
+      <ion-button (click)="loadGyms()" fill="clear">
+        <lucide-icon slot="start" name="refresh-cw"></lucide-icon>
+        Try Again
+      </ion-button>
+    </div>
+
+    <!-- Gym Cards -->
+    <ion-card
+      *ngFor="let gym of gymsToDisplay"
+      class="gym-card"
+    >
+      <img
+        [src]="gym.gym_logo?.data || 'assets/images/default-gym.png'"
+        [alt]="'Logo of ' + gym.gymInfo.name"
+        [title]="gym.gymInfo.name"
+        (error)="handleImageError($event, gym)"
+      />
+
+      <ion-card-header>
+        <div class="header-content">
+          <ion-card-title>{{ gym.gymInfo.name }}</ion-card-title>
+          <div
+            class="price-display"
+            *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0"
+          >
+            {{ gym.gymInfo.classTypes[0].price_display || 'Price on request' }}
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="gym-details">
+          <div class="detail" *ngIf="gym.gymInfo.district">
+            <lucide-icon name="map-pin"></lucide-icon>
+            <span>{{ gym.gymInfo.district }}</span>
+          </div>
+          <div
+            class="detail"
+            *ngIf="gym.gymInfo.fitnessType"
+          >
+            <lucide-icon name="users"></lucide-icon>
+            <span>{{ gym.gymInfo.fitnessType }}</span>
+          </div>
+          <div
+            class="class-types"
+            *ngIf="gym.gymInfo.classTypes && gym.gymInfo.classTypes.length > 0"
+          >
+            <div class="available-classes-label">Available classes:</div>
+            <div class="class-types-row">
+              <div
+                class="class-type"
+                *ngFor="let classType of gym.gymInfo.classTypes"
+              >
+                <span>{{ classType.name }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="detail"
+            *ngIf="!gym.gymInfo.classTypes || gym.gymInfo.classTypes.length === 0"
+          >
+            <lucide-icon name="circle-alert"></lucide-icon>
+            <span>No class types available</span>
+          </div>
+        </div>
+
+        <div class="button-container">
+          <ion-button
+            expand="block"
+            fill="solid"
+            class="view-button custom-view-button"
+            (click)="viewGymDetails(gym.id)"
+          >
+            View Details
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
